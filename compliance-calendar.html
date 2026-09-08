@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Compliance Calendar — Avanti Estates</title>
+<style>
+  :root{
+    --ink:#1b2420; --paper:#f7f5ef; --card:#ffffff; --line:#d8d3c4;
+    --amber:#b5651d; --amber-dark:#8a4a15; --red:#a3312a; --red-bg:#fbeceb;
+    --green:#3c6e47; --green-bg:#eaf3ec; --grey-bg:#eeece4;
+    --mono: 'JetBrains Mono', 'SF Mono', ui-monospace, monospace;
+    --serif: 'Iowan Old Style', 'Georgia', serif;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:760px;margin:0 auto;padding:20px 18px 60px;}
+  a.backlink{font-family:var(--mono);font-size:11.5px;color:#8a8570;text-decoration:none;display:inline-block;margin-bottom:14px;}
+  a.backlink:hover{text-decoration:underline;}
+  header{padding:22px 0 18px;border-bottom:2px solid var(--ink);margin-bottom:18px;}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--amber-dark);margin-bottom:6px;}
+  h1{font-family:var(--serif);font-size:28px;font-weight:600;margin:0 0 6px;letter-spacing:-0.01em;}
+  .sub{font-size:14px;color:#5b5648;max-width:60ch;}
+
+  .meta-row{display:flex;gap:10px;margin:16px 0 20px;flex-wrap:wrap;}
+  .meta-field{flex:1;min-width:140px;}
+  .meta-field label{display:block;font-family:var(--mono);font-size:10.5px;text-transform:uppercase;letter-spacing:0.06em;color:#8a8570;margin-bottom:4px;}
+  .meta-field input{width:100%;padding:9px 10px;border:1.5px solid var(--line);border-radius:7px;font-size:14px;font-family:inherit;background:var(--card);color:var(--ink);}
+
+  .status-bar{display:flex;gap:8px;margin:0 0 20px;flex-wrap:wrap;}
+  .status-pill{font-family:var(--mono);font-size:11.5px;font-weight:600;padding:6px 12px;border-radius:20px;}
+  .status-pill.overdue{background:var(--red-bg);color:var(--red);}
+  .status-pill.soon{background:#fdf3e6;color:var(--amber-dark);}
+  .status-pill.ok{background:var(--green-bg);color:var(--green);}
+  .status-pill.unset{background:var(--grey-bg);color:#7a7562;}
+
+  table{width:100%;border-collapse:collapse;font-size:13.5px;}
+  thead th{
+    text-align:left; font-family:var(--mono); font-size:10.5px; text-transform:uppercase; letter-spacing:0.05em;
+    color:#8a8570; padding:0 8px 8px; border-bottom:2px solid var(--ink);
+  }
+  tbody td{padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:middle;}
+  tbody tr:last-child td{border-bottom:none;}
+  .row-item{font-weight:600;}
+  .row-tool{font-size:11.5px;color:#8a8570;display:block;margin-top:2px;}
+  .row-tool a{color:var(--amber-dark);text-decoration:none;}
+  .freq-tag{
+    font-family:var(--mono); font-size:10px; text-transform:uppercase; color:#7a7562;
+    background:var(--grey-bg); padding:3px 8px; border-radius:20px; white-space:nowrap;
+  }
+  input.date-input{
+    width:130px; padding:6px 8px; border:1.5px solid var(--line); border-radius:6px; font-size:13px; font-family:inherit;
+  }
+  .due-cell{font-family:var(--mono);font-size:12.5px;white-space:nowrap;}
+  .status-dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;}
+  .status-dot.overdue{background:var(--red);}
+  .status-dot.soon{background:var(--amber);}
+  .status-dot.ok{background:var(--green);}
+  .status-dot.unset{background:#c9c4b3;}
+
+  .group-heading{
+    font-family:var(--serif); font-size:18px; font-weight:600; margin:28px 0 10px;
+    padding-bottom:6px; border-bottom:1.5px solid var(--line);
+  }
+
+  .actions{margin-top:26px;display:flex;gap:10px;flex-wrap:wrap;}
+  .btn-primary, .btn-secondary{font-family:var(--mono);font-size:12.5px;font-weight:600;padding:11px 18px;border-radius:7px;cursor:pointer;}
+  .btn-primary{background:var(--ink);color:var(--paper);border:1.5px solid var(--ink);}
+  .btn-secondary{background:var(--card);color:var(--ink);border:1.5px solid var(--line);}
+
+  footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);font-size:11.5px;color:#8a8570;font-family:var(--mono);line-height:1.6;}
+
+  @media print{
+    a.backlink, .no-print { display:none !important; }
+    input.date-input{border:none;padding:0;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="backlink no-print" href="index.html">&larr; Estates Compliance Hub</a>
+  <header>
+    <div class="eyebrow">Avanti Schools Trust — Estates</div>
+    <h1>Compliance Calendar</h1>
+    <div class="sub">Enter the date each item was last completed and this works out when it's next due, colour-coded by how urgent it is. Print or save the snapshot for filing — nothing here is saved automatically between visits.</div>
+  </header>
+
+  <div class="meta-row no-print">
+    <div class="meta-field"><label>Site</label><input type="text" id="siteField" placeholder="e.g. Avanti House Primary"></div>
+    <div class="meta-field"><label>Calendar generated</label><input type="date" id="dateField"></div>
+  </div>
+
+  <div class="status-bar no-print">
+    <span class="status-pill overdue" id="overdueCount">0 overdue</span>
+    <span class="status-pill soon" id="soonCount">0 due within 14 days</span>
+    <span class="status-pill ok" id="okCount">0 on track</span>
+    <span class="status-pill unset" id="unsetCount">0 not yet set</span>
+  </div>
+
+  <div id="tables"></div>
+
+  <div class="actions no-print">
+    <button class="btn-secondary" id="printBtn">Print / Save as PDF</button>
+    <button class="btn-secondary" id="resetBtn">Reset all dates</button>
+  </div>
+
+  <footer class="no-print">
+    Frequencies are typical baselines for school-type premises — always defer to your site's own risk assessments, written schemes, and equipment-specific manufacturer intervals where they differ.<br>
+    "Due soon" = within 14 days. Anything overdue should be actioned and re-dated as soon as it's done, not left showing red.
+  </footer>
+</div>
+
+<script>
+const freqDays = {
+  weekly: 7, monthly: 30, quarterly: 91, annual: 365, "5year": 1825, biennial: 730,
+};
+const freqLabel = {
+  weekly: "Weekly", monthly: "Monthly", quarterly: "Quarterly", annual: "Annual", "5year": "Every 5 years", biennial: "Every 2 years",
+};
+
+const groups = [
+  {
+    title: "Fire Safety",
+    items: [
+      { text: "Fire alarm test (rotating call points)", freq: "weekly", tool: "fire-safety-checklist.html" },
+      { text: "Emergency lighting function test", freq: "monthly", tool: "fire-safety-checklist.html" },
+      { text: "Fire door / self-closer check", freq: "quarterly", tool: "fire-safety-checklist.html" },
+      { text: "Fire Risk Assessment review", freq: "annual", tool: "fire-safety-checklist.html" },
+      { text: "Fire extinguisher service (competent contractor)", freq: "annual", tool: "fire-safety-checklist.html" },
+      { text: "Fire alarm system service (competent contractor)", freq: "annual", tool: "fire-safety-checklist.html" },
+      { text: "Emergency lighting full duration test", freq: "annual", tool: "fire-safety-checklist.html" },
+    ]
+  },
+  {
+    title: "Legionella / Water Hygiene",
+    items: [
+      { text: "Flush infrequently used outlets", freq: "weekly", tool: "legionella-water-hygiene-check.html" },
+      { text: "Sentinel outlet temperature checks", freq: "monthly", tool: "legionella-water-hygiene-check.html" },
+      { text: "Tank visual inspection", freq: "quarterly", tool: "legionella-water-hygiene-check.html" },
+      { text: "Shower head descale", freq: "quarterly", tool: "legionella-water-hygiene-check.html" },
+      { text: "Tank drain, clean & disinfect", freq: "annual", tool: "legionella-water-hygiene-check.html" },
+      { text: "TMV service", freq: "annual", tool: "legionella-water-hygiene-check.html" },
+      { text: "Legionella risk assessment review", freq: "biennial", tool: "legionella-water-hygiene-check.html" },
+    ]
+  },
+  {
+    title: "Electrical Safety",
+    items: [
+      { text: "RCD test button check", freq: "quarterly", tool: "electrical-safety-check.html" },
+      { text: "PAT testing (Class I equipment)", freq: "annual", tool: "electrical-safety-check.html" },
+      { text: "Fixed wiring inspection (EICR)", freq: "5year", tool: "electrical-safety-check.html" },
+    ]
+  },
+  {
+    title: "Asbestos",
+    items: [
+      { text: "Asbestos register / management plan review", freq: "annual", tool: "asbestos-permit-check.html" },
+    ]
+  },
+  {
+    title: "Working at Height",
+    items: [
+      { text: "Ladder/tower equipment inspection tag renewal", freq: "annual", tool: "working-at-height-checklist.html" },
+    ]
+  },
+];
+
+let dueDates = {}; // key -> ISO date string of last completed
+
+function keyFor(gi, ii){ return `g${gi}-i${ii}`; }
+
+function addDays(dateStr, days){
+  const d = new Date(dateStr);
+  d.setDate(d.getDate() + days);
+  return d;
+}
+
+function daysUntil(date){
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const d = new Date(date);
+  d.setHours(0,0,0,0);
+  return Math.round((d - today) / 86400000);
+}
+
+function formatDate(d){
+  return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+}
+
+function statusFor(lastCompleted, freq){
+  if(!lastCompleted) return 'unset';
+  const nextDue = addDays(lastCompleted, freqDays[freq]);
+  const diff = daysUntil(nextDue);
+  if(diff < 0) return 'overdue';
+  if(diff <= 14) return 'soon';
+  return 'ok';
+}
+
+function render(){
+  const container = document.getElementById('tables');
+  container.innerHTML = '';
+  groups.forEach((group, gi) => {
+    const heading = document.createElement('div');
+    heading.className = 'group-heading';
+    heading.textContent = group.title;
+    container.appendChild(heading);
+
+    const table = document.createElement('table');
+    table.innerHTML = `<thead><tr>
+      <th>Item</th><th>Frequency</th><th class="no-print">Last completed</th><th>Next due</th>
+    </tr></thead>`;
+    const tbody = document.createElement('tbody');
+    group.items.forEach((it, ii) => {
+      const k = keyFor(gi, ii);
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>
+          <span class="row-item">${it.text}</span>
+          <a class="row-tool" href="${it.tool}">Open ${group.title} tool &rarr;</a>
+        </td>
+        <td><span class="freq-tag">${freqLabel[it.freq]}</span></td>
+        <td class="no-print"><input type="date" class="date-input" data-key="${k}" data-freq="${it.freq}"></td>
+        <td class="due-cell" id="due-${k}"><span class="status-dot unset"></span>Not set</td>
+      `;
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    container.appendChild(table);
+  });
+
+  container.querySelectorAll('input.date-input').forEach(inp => {
+    inp.addEventListener('change', () => {
+      const k = inp.getAttribute('data-key');
+      dueDates[k] = inp.value || null;
+      updateRow(k, inp.getAttribute('data-freq'));
+      updateStatusBar();
+    });
+  });
+}
+
+function updateRow(k, freq){
+  const cell = document.getElementById(`due-${k}`);
+  const last = dueDates[k];
+  const status = statusFor(last, freq);
+  if(!last){
+    cell.innerHTML = `<span class="status-dot unset"></span>Not set`;
+    return;
+  }
+  const nextDue = addDays(last, freqDays[freq]);
+  const diff = daysUntil(nextDue);
+  let label;
+  if(status === 'overdue') label = `${formatDate(nextDue)} · ${Math.abs(diff)}d overdue`;
+  else if(status === 'soon') label = `${formatDate(nextDue)} · due in ${diff}d`;
+  else label = `${formatDate(nextDue)}`;
+  cell.innerHTML = `<span class="status-dot ${status}"></span>${label}`;
+}
+
+function updateStatusBar(){
+  let overdue=0, soon=0, ok=0, unset=0;
+  groups.forEach((group, gi) => {
+    group.items.forEach((it, ii) => {
+      const k = keyFor(gi, ii);
+      const s = statusFor(dueDates[k], it.freq);
+      if(s === 'overdue') overdue++;
+      else if(s === 'soon') soon++;
+      else if(s === 'ok') ok++;
+      else unset++;
+    });
+  });
+  document.getElementById('overdueCount').textContent = `${overdue} overdue`;
+  document.getElementById('soonCount').textContent = `${soon} due within 14 days`;
+  document.getElementById('okCount').textContent = `${ok} on track`;
+  document.getElementById('unsetCount').textContent = `${unset} not yet set`;
+}
+
+document.getElementById('printBtn').addEventListener('click', () => window.print());
+document.getElementById('resetBtn').addEventListener('click', () => {
+  if(confirm('Clear all dates entered?')){
+    dueDates = {};
+    render();
+    updateStatusBar();
+  }
+});
+
+render();
+updateStatusBar();
+</script>
+</body>
+</html>

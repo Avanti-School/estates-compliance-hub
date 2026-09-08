@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Asbestos Permit Check — Avanti Estates</title>
+<style>
+  :root{
+    --ink:#1b2420; --paper:#f7f5ef; --card:#ffffff; --line:#d8d3c4;
+    --amber:#b5651d; --amber-dark:#8a4a15; --red:#a3312a; --red-bg:#fbeceb;
+    --green:#3c6e47; --green-bg:#eaf3ec; --grey-bg:#eeece4;
+    --mono: 'JetBrains Mono', 'SF Mono', ui-monospace, monospace;
+    --serif: 'Iowan Old Style', 'Georgia', serif;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:640px;margin:0 auto;padding:20px 18px 60px;}
+  a.backlink{font-family:var(--mono);font-size:11.5px;color:#8a8570;text-decoration:none;display:inline-block;margin-bottom:14px;}
+  a.backlink:hover{text-decoration:underline;}
+  header{padding:22px 0 18px;border-bottom:2px solid var(--ink);margin-bottom:22px;}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--amber-dark);margin-bottom:6px;}
+  h1{font-family:var(--serif);font-size:28px;font-weight:600;margin:0 0 6px;letter-spacing:-0.01em;}
+  .sub{font-size:14px;color:#5b5648;max-width:52ch;}
+  .progress{display:flex;gap:4px;margin:18px 0 28px;}
+  .progress .seg{flex:1;height:3px;background:var(--line);border-radius:2px;transition:background .2s;}
+  .progress .seg.done{background:var(--ink);}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:22px 20px;margin-bottom:14px;}
+  .qnum{font-family:var(--mono);font-size:11px;color:#8a8570;margin-bottom:8px;letter-spacing:0.05em;}
+  .qtext{font-size:17px;font-weight:600;margin-bottom:4px;line-height:1.35;}
+  .qhelp{font-size:13.5px;color:#6b6656;margin-bottom:16px;}
+  .options{display:flex;flex-direction:column;gap:8px;}
+  .opt{text-align:left;padding:13px 15px;border:1.5px solid var(--line);border-radius:8px;background:var(--paper);font-size:15px;font-weight:500;color:var(--ink);cursor:pointer;transition:border-color .15s, background .15s;}
+  .opt:hover{border-color:var(--ink);background:#efece2;}
+  .opt:active{transform:scale(0.995);}
+  .opt .desc{display:block;font-weight:400;font-size:12.5px;color:#7a7562;margin-top:2px;}
+  .backrow{margin-top:16px;}
+  .backbtn{font-family:var(--mono);font-size:12px;color:#8a8570;background:none;border:none;cursor:pointer;padding:6px 0;text-decoration:underline;text-underline-offset:3px;}
+  .result{border-radius:10px;padding:24px 20px 22px;border:1.5px solid;}
+  .result.stop{background:var(--red-bg);border-color:#e0b8b5;}
+  .result.caution{background:#fdf3e6;border-color:#e6c896;}
+  .result.go{background:var(--green-bg);border-color:#bcd9c3;}
+  .result-tag{font-family:var(--mono);font-size:11px;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:8px;}
+  .result.stop .result-tag{color:var(--red);}
+  .result.caution .result-tag{color:var(--amber-dark);}
+  .result.go .result-tag{color:var(--green);}
+  .result-head{font-family:var(--serif);font-size:22px;font-weight:600;margin-bottom:10px;line-height:1.25;}
+  .result-body{font-size:14.5px;margin-bottom:14px;}
+  .result-body p{margin:0 0 10px;}
+  .result-body ul{margin:0 0 10px;padding-left:20px;}
+  .result-body li{margin-bottom:5px;}
+  .restart{display:inline-block;margin-top:6px;font-family:var(--mono);font-size:12.5px;color:var(--ink);background:var(--card);border:1.5px solid var(--ink);border-radius:7px;padding:9px 16px;cursor:pointer;}
+  .who-note{font-size:12.5px;color:#7a7562;background:var(--grey-bg);border-radius:7px;padding:10px 13px;margin-top:16px;}
+  footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);font-size:11.5px;color:#8a8570;font-family:var(--mono);line-height:1.6;}
+  footer a{color:#6b6656;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="backlink" href="index.html">&larr; Estates Compliance Hub</a>
+  <header>
+    <div class="eyebrow">Avanti Schools Trust — Estates</div>
+    <h1>Asbestos Permit Check</h1>
+    <div class="sub">Run this before any work that drills, cuts, lifts, sands, or otherwise disturbs a wall, ceiling, floor, or pipe. If you're not sure, the answer is stop — not guess.</div>
+  </header>
+
+  <div class="progress" id="progress"></div>
+  <div id="stage"></div>
+
+  <footer>
+    Based on the Control of Asbestos Regulations 2012 (CAR 2012) and HSE guidance.<br>
+    This is a first-line screening check, not a survey. Any doubt about presence, extent, or condition of ACMs — stop and get specialist advice before proceeding.<br>
+    Trust asbestos duty holder contact should be on file at each site's H&S noticeboard / management plan.
+  </footer>
+</div>
+
+<script>
+const stageEl = document.getElementById('stage');
+const progressEl = document.getElementById('progress');
+const TOTAL_STEPS = 3;
+
+const nodes = {
+  start: {
+    q: "Is there a valid asbestos register / management survey for this building?",
+    help: "Every non-domestic building built before 2000 should have one under Regulation 4 of CAR 2012. If you can't locate it, treat this as a 'no'.",
+    options: [
+      { label: "Yes, and it's accessible to check now", next: "reg_check" },
+      { label: "No, or I'm not sure / can't find it", next: "R_NO_REGISTER" },
+    ]
+  },
+
+  reg_check: {
+    q: "Has the specific work location been checked against the register for this job?",
+    help: "Not just 'does the building have a register' — has someone actually looked up this room, wall, or pipe run before work is due to start?",
+    options: [
+      { label: "Yes, this specific location has been checked", next: "location_result" },
+      { label: "No, not yet — the register exists but hasn't been checked for this job", next: "R_CHECK_FIRST" },
+    ]
+  },
+
+  location_result: {
+    q: "What does the register show for this exact location?",
+    help: "",
+    options: [
+      { label: "No ACMs recorded here, or previously removed and recorded as clear", next: "R_CLEAR" },
+      {
+        label: "ACMs present or presumed, but the planned work won't disturb them",
+        desc: "e.g. redecorating around an undamaged asbestos cement panel without drilling, sanding, or touching it",
+        next: "R_CAUTION"
+      },
+      {
+        label: "ACMs present or presumed, and the work will or might disturb them",
+        desc: "e.g. drilling, cutting, sanding, removing, or any damage to the material",
+        next: "work_type"
+      },
+    ]
+  },
+
+  work_type: {
+    q: "What kind of work is planned on or near the ACM?",
+    help: "This determines who is legally allowed to do the work.",
+    options: [
+      {
+        label: "High-risk licensed work",
+        desc: "e.g. removing sprayed asbestos coatings, lagging, insulation, or significant AIB removal — high fibre release potential",
+        next: "R_LICENSED"
+      },
+      {
+        label: "Notifiable non-licensed work (NNLW)",
+        desc: "e.g. larger-scale removal of asbestos insulating board (AIB), some textured coating removal",
+        next: "R_NNLW"
+      },
+      {
+        label: "Minor, short-duration non-licensed work",
+        desc: "e.g. drilling a small number of holes in asbestos cement, removing a small number of asbestos cement sheets",
+        next: "R_NONLICENSED"
+      },
+      { label: "Not sure which category this falls into", next: "R_UNSURE" },
+    ]
+  },
+
+  R_NO_REGISTER: {
+    result: {
+      tag: "Stop",
+      cls: "stop",
+      head: "Do not start work — no register confirmed",
+      body: `<p>Without a confirmed asbestos register or management survey, there's no basis to know what's safe to disturb in this building.</p>
+             <ul>
+               <li>Contact the Trust's asbestos duty holder or Head of Estates before any work proceeds.</li>
+               <li>If work is already scheduled, pause it until the register is located or a survey is arranged.</li>
+             </ul>`
+    }
+  },
+
+  R_CHECK_FIRST: {
+    result: {
+      tag: "Stop",
+      cls: "stop",
+      head: "Check the register for this location before starting",
+      body: `<p>The building has a register, but no one has confirmed what it says about this specific location yet.</p>
+             <ul>
+               <li>Locate the register/management plan and check the room, wall, or pipe run against it.</li>
+               <li>Come back through this check once that's done — don't proceed on an assumption either way.</li>
+             </ul>`
+    }
+  },
+
+  R_CLEAR: {
+    result: {
+      tag: "Go",
+      cls: "go",
+      head: "Cleared to proceed",
+      body: `<p>The register shows no ACMs at this location, so the work can proceed on that basis.</p>
+             <ul>
+               <li>If anything is uncovered during the work that looks like it could be asbestos-containing (e.g. unexpected old lagging, textured coating, board not matching the register) — stop immediately and treat it as suspect material.</li>
+             </ul>`
+    }
+  },
+
+  R_CAUTION: {
+    result: {
+      tag: "Proceed with caution",
+      cls: "caution",
+      head: "Proceed, but agree the method first",
+      body: `<p>ACMs are present or presumed nearby, but the work as planned shouldn't disturb them — provided the method is followed exactly.</p>
+             <ul>
+               <li>Agree the method statement with your asbestos duty holder before starting, so "won't disturb" is a documented decision, not an assumption.</li>
+               <li>If the method changes on the day (e.g. more drilling than expected), stop and re-check rather than pushing on.</li>
+             </ul>`
+    }
+  },
+
+  R_LICENSED: {
+    result: {
+      tag: "Stop",
+      cls: "stop",
+      head: "Licensed contractor required — do not proceed with general works",
+      body: `<p>This category of work can only be carried out by an HSE-licensed asbestos removal contractor.</p>
+             <ul>
+               <li>HSE requires at least 14 days' notice before licensed work begins (ND — notification of work).</li>
+               <li>In-house staff or general contractors must not attempt this work under any circumstances.</li>
+               <li>Contact your asbestos duty holder to commission a licensed contractor.</li>
+             </ul>`
+    }
+  },
+
+  R_NNLW: {
+    result: {
+      tag: "Proceed with caution",
+      cls: "caution",
+      head: "Notifiable non-licensed work — controls and notification required",
+      body: `<p>This doesn't need a licensed contractor, but it does need to be notified to HSE and carried out under proper controls.</p>
+             <ul>
+               <li>The contractor must notify HSE before work starts.</li>
+               <li>Medical surveillance and health records are required for workers carrying out NNLW.</li>
+               <li>A written plan of work, RPE, and proper waste disposal arrangements must be in place.</li>
+             </ul>`
+    }
+  },
+
+  R_NONLICENSED: {
+    result: {
+      tag: "Proceed with caution",
+      cls: "caution",
+      head: "Non-licensed work — controls still required",
+      body: `<p>Minor, short-duration work like this doesn't require a licence or HSE notification, but it isn't a free pass either.</p>
+             <ul>
+               <li>A written plan of work is still required, along with trained personnel, wet methods to suppress dust, appropriate RPE, and correct bagging/disposal of waste as asbestos waste.</li>
+               <li>If the scope grows on the day (more material than expected), stop and re-assess against the NNLW/licensed categories.</li>
+             </ul>`
+    }
+  },
+
+  R_UNSURE: {
+    result: {
+      tag: "Stop",
+      cls: "stop",
+      head: "Get specialist advice before classifying the work",
+      body: `<p>Getting the category wrong here has real consequences — treating licensed-level work as minor non-licensed work is a serious breach.</p>
+             <ul>
+               <li>Contact your asbestos duty holder or a licensed asbestos consultant to classify the work properly before anything proceeds.</li>
+               <li>Do not let a contractor self-classify their own work as "minor" without independent confirmation.</li>
+             </ul>`
+    }
+  },
+};
+
+let history = ['start'];
+
+function renderProgress(depth){
+  progressEl.innerHTML = '';
+  for(let i=0;i<TOTAL_STEPS;i++){
+    const seg = document.createElement('div');
+    seg.className = 'seg' + (i < depth ? ' done' : '');
+    progressEl.appendChild(seg);
+  }
+}
+
+function renderNode(id){
+  const node = nodes[id];
+  if(node.result){ renderResult(node.result); return; }
+  renderProgress(history.length);
+  const idx = history.length;
+  let html = `<div class="card">
+    <div class="qnum">Step ${idx}</div>
+    <div class="qtext">${node.q}</div>
+    ${node.help ? `<div class="qhelp">${node.help}</div>` : ''}
+    <div class="options">`;
+  node.options.forEach(opt => {
+    html += `<button class="opt" data-next="${opt.next}">${opt.label}${opt.desc ? `<span class="desc">${opt.desc}</span>` : ''}</button>`;
+  });
+  html += `</div></div>`;
+  if(history.length > 1){
+    html += `<div class="backrow"><button class="backbtn" id="backBtn">&larr; back</button></div>`;
+  }
+  stageEl.innerHTML = html;
+
+  stageEl.querySelectorAll('.opt').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const next = btn.getAttribute('data-next');
+      history.push(next);
+      renderNode(next);
+      window.scrollTo({top:0, behavior:'smooth'});
+    });
+  });
+  const backBtn = document.getElementById('backBtn');
+  if(backBtn){
+    backBtn.addEventListener('click', ()=>{
+      history.pop();
+      renderNode(history[history.length-1]);
+    });
+  }
+}
+
+function renderResult(result){
+  renderProgress(TOTAL_STEPS);
+  stageEl.innerHTML = `
+    <div class="result ${result.cls}">
+      <div class="result-tag">${result.tag}</div>
+      <div class="result-head">${result.head}</div>
+      <div class="result-body">${result.body}</div>
+      <button class="restart" id="restartBtn">Check another job</button>
+    </div>
+    <div class="who-note">This result is a screening steer. Anything other than a clean "no ACMs recorded" outcome should be confirmed with your asbestos duty holder before work starts.</div>
+  `;
+  document.getElementById('restartBtn').addEventListener('click', ()=>{
+    history = ['start'];
+    renderNode('start');
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+}
+
+renderNode('start');
+</script>
+</body>
+</html>

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Estates Compliance Hub — Avanti Schools Trust</title>
+<style>
+  :root{
+    --ink:#1b2420; --paper:#f7f5ef; --card:#ffffff; --line:#d8d3c4;
+    --amber:#b5651d; --amber-dark:#8a4a15; --red:#a3312a; --red-bg:#fbeceb;
+    --green:#3c6e47; --green-bg:#eaf3ec; --grey-bg:#eeece4;
+    --mono: 'JetBrains Mono', 'SF Mono', ui-monospace, monospace;
+    --serif: 'Iowan Old Style', 'Georgia', serif;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:760px;margin:0 auto;padding:28px 20px 70px;}
+
+  header{padding:0 0 22px;border-bottom:2px solid var(--ink);margin-bottom:30px;}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--amber-dark);margin-bottom:8px;}
+  h1{font-family:var(--serif);font-size:32px;font-weight:600;margin:0 0 8px;letter-spacing:-0.01em;}
+  .sub{font-size:15px;color:#5b5648;max-width:60ch;}
+
+  .group{margin-bottom:32px;}
+  .group-title{
+    font-family:var(--mono);
+    font-size:11.5px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:#8a8570;
+    margin-bottom:12px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .group-title::after{content:'';flex:1;height:1px;background:var(--line);}
+
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  @media (max-width:560px){ .grid{grid-template-columns:1fr;} }
+
+  .tool-card{
+    display:block;
+    background:var(--card);
+    border:1.5px solid var(--line);
+    border-radius:11px;
+    padding:18px 18px 16px;
+    text-decoration:none;
+    color:var(--ink);
+    transition:border-color .15s, transform .1s;
+  }
+  .tool-card:hover{border-color:var(--ink);transform:translateY(-1px);}
+  .tool-card.featured{
+    grid-column:1 / -1;
+    background:linear-gradient(135deg, #fdf3e6, var(--card));
+    border-color:var(--amber);
+  }
+  .tool-card.dashboard{
+    grid-column:1 / -1;
+    background:linear-gradient(135deg, var(--green-bg), var(--card));
+    border-color:var(--green);
+  }
+  .tool-tag{
+    font-family:var(--mono);
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    color:var(--amber-dark);
+    margin-bottom:8px;
+    display:inline-block;
+    background:var(--grey-bg);
+    padding:3px 8px;
+    border-radius:20px;
+  }
+  .tool-card.featured .tool-tag{background:var(--amber);color:#fff;}
+  .tool-card.dashboard .tool-tag{background:var(--green);color:#fff;}
+  .tool-name{font-family:var(--serif);font-size:18px;font-weight:600;margin-bottom:6px;line-height:1.3;}
+  .tool-desc{font-size:13px;color:#6b6656;line-height:1.45;}
+  .tool-arrow{font-family:var(--mono);font-size:12px;color:var(--amber-dark);margin-top:10px;display:inline-block;}
+  .tool-card.dashboard .tool-arrow{color:var(--green);}
+
+  footer{
+    margin-top:40px;
+    padding-top:18px;
+    border-top:1px solid var(--line);
+    font-size:11.5px;
+    color:#8a8570;
+    font-family:var(--mono);
+    line-height:1.7;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Avanti Schools Trust — Estates</div>
+    <h1>Estates Compliance Hub</h1>
+    <div class="sub">Self-check tools for the incidents, site conditions, and contractor work that come up most often across the estate. Each tool gives a steer — final judgement calls still sit with your Head of Estates or H&S lead.</div>
+  </header>
+
+  <div class="group">
+    <div class="group-title">Dashboard</div>
+    <div class="grid">
+      <a class="tool-card dashboard" href="compliance-calendar.html">
+        <span class="tool-tag">What's due</span>
+        <div class="tool-name">Compliance Calendar</div>
+        <div class="tool-desc">Enter last-completed dates across fire, water hygiene, electrical, asbestos and height checks — see what's overdue, due soon, or on track in one place.</div>
+        <span class="tool-arrow">Open the calendar &rarr;</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="group">
+    <div class="group-title">Contractor gateway</div>
+    <div class="grid">
+      <a class="tool-card featured" href="permit-to-work.html">
+        <span class="tool-tag">Start here for contractor jobs</span>
+        <div class="tool-name">Permit to Work</div>
+        <div class="tool-desc">Select the job type, confirm the right pre-checks (asbestos, height, electrical, hot works, confined space), and issue a printable signed-off permit.</div>
+        <span class="tool-arrow">Issue a permit &rarr;</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="group">
+    <div class="group-title">Incident &amp; reporting</div>
+    <div class="grid">
+      <a class="tool-card" href="riddor-self-check.html">
+        <span class="tool-tag">Decision tree</span>
+        <div class="tool-name">RIDDOR Self-Check</div>
+        <div class="tool-desc">Work out whether an incident needs reporting to HSE, just recording internally, or neither.</div>
+        <span class="tool-arrow">Check an incident &rarr;</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="group">
+    <div class="group-title">Substance &amp; material safety</div>
+    <div class="grid">
+      <a class="tool-card" href="coshh-checker.html">
+        <span class="tool-tag">Checker</span>
+        <div class="tool-name">COSHH Checker</div>
+        <div class="tool-desc">Check how a hazardous substance should be stored, handled, and controlled on site.</div>
+        <span class="tool-arrow">Check a substance &rarr;</span>
+      </a>
+      <a class="tool-card" href="asbestos-permit-check.html">
+        <span class="tool-tag">Decision tree</span>
+        <div class="tool-name">Asbestos Permit Check</div>
+        <div class="tool-desc">Screen any job that will drill, cut, or disturb a wall, ceiling, floor, or pipe against the asbestos register.</div>
+        <span class="tool-arrow">Screen a job &rarr;</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="group">
+    <div class="group-title">Site walk-rounds &amp; recurring checks</div>
+    <div class="grid">
+      <a class="tool-card" href="fire-safety-checklist.html">
+        <span class="tool-tag">Timeline checklist</span>
+        <div class="tool-name">Fire Safety Walk-Round</div>
+        <div class="tool-desc">Weekly, monthly, quarterly and annual fire checks — generate and file a summary per round.</div>
+        <span class="tool-arrow">Start a walk-round &rarr;</span>
+      </a>
+      <a class="tool-card" href="legionella-water-hygiene-check.html">
+        <span class="tool-tag">Timeline checklist</span>
+        <div class="tool-name">Legionella / Water Hygiene Check</div>
+        <div class="tool-desc">L8-based checks grouped by weekly, monthly, quarterly and annual timelines — generate and file a signed-off PDF summary per round.</div>
+        <span class="tool-arrow">Start a check &rarr;</span>
+      </a>
+      <a class="tool-card" href="electrical-safety-check.html">
+        <span class="tool-tag">Timeline + isolation record</span>
+        <div class="tool-name">Electrical Safety Check</div>
+        <div class="tool-desc">Recurring PAT/EICR/RCD testing timeline, plus a step-by-step safe isolation record for any job that needs a circuit isolated.</div>
+        <span class="tool-arrow">Start a check &rarr;</span>
+      </a>
+      <a class="tool-card" href="working-at-height-checklist.html">
+        <span class="tool-tag">Checklist</span>
+        <div class="tool-name">Working at Height Checklist</div>
+        <div class="tool-desc">Ladder, tower, and MEWP checks before anyone goes above ground level — staff or contractors.</div>
+        <span class="tool-arrow">Start a checklist &rarr;</span>
+      </a>
+      <a class="tool-card" href="confined-space-check.html">
+        <span class="tool-tag">Entry checklist</span>
+        <div class="tool-name">Confined Space Entry Check</div>
+        <div class="tool-desc">Pre-entry checks for atmosphere, standby person, and rescue plan — issues a printable entry record.</div>
+        <span class="tool-arrow">Start a check &rarr;</span>
+      </a>
+    </div>
+  </div>
+
+  <footer>
+    These tools give a first-line steer based on HSE guidance current as of Aug 2026 — none of them replace the Trust's formal risk assessments, management plans, or specialist surveys.<br>
+    Serious or ambiguous cases: contact your Head of Estates or Trust H&S lead before acting on a "no action needed" result.<br>
+    All checks run locally in your browser — nothing is saved centrally.
+  </footer>
+</div>
+</body>
+</html>

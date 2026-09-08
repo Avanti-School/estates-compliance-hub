@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Electrical Safety Check — Avanti Estates</title>
+<style>
+  :root{
+    --ink:#1b2420; --paper:#f7f5ef; --card:#ffffff; --line:#d8d3c4;
+    --amber:#b5651d; --amber-dark:#8a4a15; --red:#a3312a; --red-bg:#fbeceb;
+    --green:#3c6e47; --green-bg:#eaf3ec; --grey-bg:#eeece4;
+    --mono: 'JetBrains Mono', 'SF Mono', ui-monospace, monospace;
+    --serif: 'Iowan Old Style', 'Georgia', serif;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:640px;margin:0 auto;padding:20px 18px 60px;}
+  a.backlink{font-family:var(--mono);font-size:11.5px;color:#8a8570;text-decoration:none;display:inline-block;margin-bottom:14px;}
+  a.backlink:hover{text-decoration:underline;}
+  header{padding:22px 0 18px;border-bottom:2px solid var(--ink);margin-bottom:22px;}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--amber-dark);margin-bottom:6px;}
+  h1{font-family:var(--serif);font-size:27px;font-weight:600;margin:0 0 6px;letter-spacing:-0.01em;}
+  .sub{font-size:14px;color:#5b5648;max-width:54ch;}
+
+  .section-divider{
+    display:flex; align-items:center; gap:10px; margin:32px 0 16px;
+    font-family:var(--mono); font-size:12px; letter-spacing:0.08em; text-transform:uppercase; color:#8a8570;
+  }
+  .section-divider::after{content:'';flex:1;height:1px;background:var(--line);}
+  .section-intro{font-size:13px;color:#6b6656;margin-bottom:14px;}
+
+  .meta-row{display:flex;gap:10px;margin:16px 0 4px;flex-wrap:wrap;}
+  .meta-field{flex:1;min-width:140px;}
+  .meta-field.full{flex:1 1 100%;}
+  .meta-field label{display:block;font-family:var(--mono);font-size:10.5px;text-transform:uppercase;letter-spacing:0.06em;color:#8a8570;margin-bottom:4px;}
+  .meta-field input, .meta-field textarea{width:100%;padding:9px 10px;border:1.5px solid var(--line);border-radius:7px;font-size:14px;font-family:inherit;background:var(--card);color:var(--ink);}
+  .meta-field textarea{min-height:60px;resize:vertical;}
+
+  .summary-bar{display:flex;gap:8px;margin:20px 0 24px;padding:14px 16px;background:var(--card);border:1px solid var(--line);border-radius:10px;align-items:center;flex-wrap:wrap;}
+  .summary-count{font-family:var(--mono);font-size:13px;}
+  .summary-count b{font-size:16px;}
+  .summary-bar .divider{width:1px;height:20px;background:var(--line);}
+  .pill{font-family:var(--mono);font-size:11px;padding:4px 9px;border-radius:20px;font-weight:600;}
+  .pill.ok{background:var(--green-bg);color:var(--green);}
+  .pill.attn{background:var(--red-bg);color:var(--red);}
+  .pill.pending{background:var(--grey-bg);color:#7a7562;}
+
+  .timeline-group{margin-bottom:16px;background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:18px 16px 16px;}
+  .timeline-head{display:flex; align-items:baseline; gap:10px; margin-bottom:4px;}
+  .timeline-badge{
+    font-family:var(--mono); font-size:11px; font-weight:700; text-transform:uppercase;
+    letter-spacing:0.04em; padding:4px 11px; border-radius:20px; color:#fff; white-space:nowrap;
+  }
+  .timeline-note{font-size:12.5px;color:#7a7562;margin:4px 0 12px;}
+
+  .item{background:var(--paper);border:1.5px solid var(--line);border-radius:9px;padding:13px 14px;margin-bottom:8px;}
+  .item.status-attn{border-color:#e0b8b5;background:var(--red-bg);}
+  .item.status-ok{border-color:#bcd9c3;background:var(--green-bg);}
+  .item.status-na{opacity:0.55;}
+  .item-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:10px;}
+  .item-text{font-size:14.5px;font-weight:500;line-height:1.35;}
+  .cat-tag{
+    font-family:var(--mono); font-size:10px; text-transform:uppercase; letter-spacing:0.04em;
+    color:#7a7562; background:var(--grey-bg); padding:3px 8px; border-radius:20px; white-space:nowrap; flex-shrink:0;
+  }
+  .item-controls{display:flex;gap:6px;flex-wrap:wrap;}
+  .item-controls button{font-family:var(--mono);font-size:11.5px;padding:7px 12px;border-radius:6px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer;font-weight:600;}
+  .item-controls button.active-ok{background:var(--green);color:#fff;border-color:var(--green);}
+  .item-controls button.active-attn{background:var(--red);color:#fff;border-color:var(--red);}
+  .item-controls button.active-na{background:#8a8570;color:#fff;border-color:#8a8570;}
+  .note-toggle{display:none;margin-top:10px;}
+  .note-toggle.show{display:block;}
+  .note-toggle textarea{width:100%;min-height:52px;padding:8px 10px;border:1.5px solid var(--line);border-radius:6px;font-size:13px;font-family:inherit;resize:vertical;background:#fff;}
+  .note-label{font-family:var(--mono);font-size:10.5px;text-transform:uppercase;color:#8a8570;margin-bottom:4px;display:block;}
+
+  .group-summary-row{margin-top:10px;padding-top:12px;border-top:1px dashed var(--line);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+  .group-progress{font-family:var(--mono);font-size:11.5px;color:#7a7562;}
+  .btn-primary, .btn-secondary{font-family:var(--mono);font-size:12.5px;font-weight:600;padding:10px 16px;border-radius:7px;cursor:pointer;}
+  .btn-primary{background:var(--ink);color:var(--paper);border:1.5px solid var(--ink);}
+  .btn-secondary{background:var(--card);color:var(--ink);border:1.5px solid var(--line);}
+  .group-summary-btn{font-family:var(--mono);font-size:12px;font-weight:600;padding:9px 15px;border-radius:7px;background:var(--ink);color:var(--paper);border:1.5px solid var(--ink);cursor:pointer;}
+
+  .step-item{background:var(--card);border:1.5px solid var(--line);border-radius:9px;padding:13px 14px;margin-bottom:8px;display:flex;gap:12px;align-items:flex-start;}
+  .step-item.checked{border-color:#bcd9c3;background:var(--green-bg);}
+  .step-num{
+    font-family:var(--mono); font-weight:700; font-size:12px; color:#fff; background:var(--amber-dark);
+    border-radius:50%; width:22px; height:22px; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px;
+  }
+  .step-item input[type=checkbox]{margin-top:3px;width:18px;height:18px;flex-shrink:0;cursor:pointer;}
+  .step-text{font-size:14.5px;line-height:1.4;}
+
+  .actions{margin-top:20px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+
+  .report{margin-top:20px;padding:22px 20px;background:var(--card);border:1.5px solid var(--ink);border-radius:10px;display:none;}
+  .report.show{display:block;}
+  .report-ref{font-family:var(--mono);font-size:11.5px;color:#8a8570;margin-bottom:4px;}
+  .report h2{font-family:var(--serif);font-size:20px;margin:0 0 4px;}
+  .report-meta{font-size:13px;color:#5b5648;margin-bottom:16px;}
+  .report-summary-line{font-family:var(--mono);font-size:12.5px;margin-bottom:16px;color:#5b5648;}
+  .report-group{margin-bottom:14px;}
+  .report-group-title{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:0.05em;color:#8a8570;margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid var(--line);}
+  .report-item{font-size:13.5px;padding:6px 0;display:flex;gap:8px;align-items:flex-start;}
+  .report-item .ricon{flex-shrink:0;font-weight:700;}
+  .report-item.r-ok .ricon{color:var(--green);}
+  .report-item.r-attn .ricon{color:var(--red);}
+  .report-item.r-na .ricon{color:#8a8570;}
+  .report-item.r-pending .ricon{color:#b5651d;}
+  .report-item .rnote{color:#7a7562;display:block;margin-top:2px;}
+  .report-actions{margin-top:18px;display:flex;gap:10px;flex-wrap:wrap;}
+
+  footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);font-size:11.5px;color:#8a8570;font-family:var(--mono);line-height:1.6;}
+
+  @media print{
+    a.backlink, .no-print { display:none !important; }
+    body.report-mode .checklist-wrap, body.report-mode .summary-bar, body.report-mode .isolation-wrap { display:none !important; }
+    .report{border:none;padding:0;}
+    .report-actions{display:none !important;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="backlink no-print" href="index.html">&larr; Estates Compliance Hub</a>
+  <header>
+    <div class="eyebrow">Avanti Schools Trust — Estates</div>
+    <h1>Electrical Safety Check</h1>
+    <div class="sub">Recurring testing and inspection on the left timeline, plus a step-by-step safe isolation record for any job that needs a circuit isolated before work starts.</div>
+  </header>
+
+  <div class="section-divider">Recurring testing &amp; inspection</div>
+  <div class="section-intro">Based on typical EICR/PAT intervals for education premises — confirm against your site's actual testing regime, which may set different intervals for specific equipment.</div>
+
+  <div class="meta-row no-print">
+    <div class="meta-field"><label>Site</label><input type="text" id="siteField" placeholder="e.g. Avanti House Primary"></div>
+    <div class="meta-field"><label>Date</label><input type="date" id="dateField"></div>
+    <div class="meta-field"><label>Checked by</label><input type="text" id="checkerField" placeholder="Your name"></div>
+  </div>
+
+  <div class="summary-bar no-print" id="summaryBar">
+    <div class="summary-count"><b id="doneCount">0</b>/<span id="totalCount">0</span> checked overall</div>
+    <div class="divider"></div>
+    <span class="pill ok" id="okPill">0 OK</span>
+    <span class="pill attn" id="attnPill">0 need attention</span>
+    <span class="pill pending" id="pendingPill">0 not yet checked</span>
+  </div>
+
+  <div class="checklist-wrap" id="checklist"></div>
+
+  <div class="actions no-print">
+    <button class="btn-secondary" id="fullReportBtn">Generate full summary (all timelines)</button>
+    <button class="btn-secondary" id="resetBtn">Reset check</button>
+  </div>
+
+  <div class="section-divider">Safe isolation procedure</div>
+  <div class="section-intro">Run this every time a circuit or piece of equipment needs isolating before work — this is a per-job record, not a recurring check.</div>
+
+  <div class="isolation-wrap no-print" id="isolationWrap"></div>
+
+  <div class="report" id="reportBox">
+    <div id="reportContent"></div>
+    <div class="report-actions">
+      <button class="btn-secondary" id="printBtn">Print / Save as PDF</button>
+      <button class="btn-secondary" id="closeReportBtn">Back to checklist</button>
+    </div>
+  </div>
+
+  <footer class="no-print">
+    Based on the Electricity at Work Regulations 1989 and IET Code of Practice for In-Service Inspection and Testing.<br>
+    Safe isolation must always follow: isolate &rarr; lock off &rarr; prove test equipment on a known live source &rarr; prove dead &rarr; re-prove test equipment. Never skip the re-proving step.
+  </footer>
+</div>
+
+<script>
+const timelineGroups = [
+  {
+    key: "ongoing",
+    title: "Before Each Use",
+    color: "#6b6656",
+    note: "A quick user check, not a formal test — done by whoever is about to use the equipment.",
+    items: [
+      { text: "Portable equipment visually checked for damage to plug, cable, or casing before use", cat: "Portable" },
+      { text: "No equipment in use with a damaged plug, cracked casing, or exposed wiring", cat: "Portable" },
+    ]
+  },
+  {
+    key: "quarterly",
+    title: "Quarterly",
+    color: "#8a4a15",
+    note: "",
+    items: [
+      { text: "RCD (residual current device) test button function tested on relevant circuits", cat: "RCD" },
+    ]
+  },
+  {
+    key: "annual",
+    title: "Annual",
+    color: "#3c6e47",
+    note: "",
+    items: [
+      { text: "PAT (portable appliance testing) carried out on Class I equipment and records updated", cat: "PAT" },
+      { text: "Distribution boards and consumer units visually inspected for damage, overheating, or unauthorised modifications", cat: "Fixed installation" },
+    ]
+  },
+  {
+    key: "5year",
+    title: "Every 5 Years",
+    color: "#2d5a37",
+    note: "Higher-risk premises (which education buildings are typically classed as) are on a 5-year EICR cycle rather than the general 10-year default.",
+    items: [
+      { text: "Fixed wiring installation inspected and tested (EICR) and certificate held on file", cat: "Fixed installation" },
+    ]
+  },
+];
+
+let state = {};
+let total = 0;
+function keyFor(gi, ii){ return `g${gi}-i${ii}`; }
+
+function groupCounts(gi){
+  const group = timelineGroups[gi];
+  let ok=0, attn=0, na=0, pending=0;
+  group.items.forEach((_, ii) => {
+    const s = state[keyFor(gi, ii)].status;
+    if(s === 'ok') ok++;
+    else if(s === 'attn') attn++;
+    else if(s === 'na') na++;
+    else pending++;
+  });
+  return { ok, attn, na, pending, total: group.items.length };
+}
+
+function buildChecklist(){
+  const container = document.getElementById('checklist');
+  container.innerHTML = '';
+  total = 0;
+  timelineGroups.forEach((group, gi) => {
+    const groupEl = document.createElement('div');
+    groupEl.className = 'timeline-group';
+    groupEl.innerHTML = `
+      <div class="timeline-head">
+        <span class="timeline-badge" style="background:${group.color}">${group.title}</span>
+      </div>
+      ${group.note ? `<div class="timeline-note">${group.note}</div>` : ''}
+    `;
+    group.items.forEach((it, ii) => {
+      total++;
+      const k = keyFor(gi, ii);
+      state[k] = { status: null, note: '' };
+      const item = document.createElement('div');
+      item.className = 'item';
+      item.id = `item-${k}`;
+      item.innerHTML = `
+        <div class="item-top">
+          <div class="item-text">${it.text}</div>
+          <span class="cat-tag">${it.cat}</span>
+        </div>
+        <div class="item-controls">
+          <button data-status="ok" data-key="${k}">✓ OK</button>
+          <button data-status="attn" data-key="${k}">⚠ Needs attention</button>
+          <button data-status="na" data-key="${k}">— N/A</button>
+        </div>
+        <div class="note-toggle" id="note-${k}">
+          <label class="note-label">What's the issue?</label>
+          <textarea data-key="${k}" placeholder="Brief description..."></textarea>
+        </div>`;
+      groupEl.appendChild(item);
+    });
+    const summaryRow = document.createElement('div');
+    summaryRow.className = 'group-summary-row no-print';
+    summaryRow.innerHTML = `
+      <span class="group-progress" id="group-progress-${gi}"></span>
+      <button class="group-summary-btn" data-group="${gi}">Generate ${group.title} summary</button>
+    `;
+    groupEl.appendChild(summaryRow);
+    container.appendChild(groupEl);
+  });
+  document.getElementById('totalCount').textContent = total;
+
+  container.querySelectorAll('.item-controls button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const k = btn.getAttribute('data-key');
+      state[k].status = btn.getAttribute('data-status');
+      updateItemUI(k);
+      updateSummary();
+    });
+  });
+  container.querySelectorAll('textarea').forEach(ta => {
+    ta.addEventListener('input', () => { state[ta.getAttribute('data-key')].note = ta.value; });
+  });
+  container.querySelectorAll('.group-summary-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      generateReport(parseInt(btn.getAttribute('data-group'), 10));
+    });
+  });
+
+  timelineGroups.forEach((_, gi) => updateGroupProgress(gi));
+}
+
+function updateGroupProgress(gi){
+  const c = groupCounts(gi);
+  const done = c.total - c.pending;
+  document.getElementById(`group-progress-${gi}`).textContent = `${done}/${c.total} checked · ${c.attn} needing attention`;
+}
+
+function updateItemUI(k){
+  const item = document.getElementById(`item-${k}`);
+  const s = state[k].status;
+  item.classList.remove('status-ok','status-attn','status-na');
+  if(s === 'ok') item.classList.add('status-ok');
+  if(s === 'attn') item.classList.add('status-attn');
+  if(s === 'na') item.classList.add('status-na');
+  item.querySelectorAll('.item-controls button').forEach(b => {
+    b.classList.remove('active-ok','active-attn','active-na');
+    if(b.getAttribute('data-status') === s) b.classList.add(`active-${s}`);
+  });
+  const noteBox = document.getElementById(`note-${k}`);
+  if(s === 'attn'){ noteBox.classList.add('show'); } else { noteBox.classList.remove('show'); }
+
+  const gi = parseInt(k.match(/^g(\d+)-/)[1], 10);
+  updateGroupProgress(gi);
+}
+
+function updateSummary(){
+  let ok=0, attn=0, pending=0;
+  Object.values(state).forEach(v => {
+    if(v.status === 'ok') ok++;
+    else if(v.status === 'attn') attn++;
+    else if(v.status === null) pending++;
+  });
+  document.getElementById('doneCount').textContent = total - pending;
+  document.getElementById('okPill').textContent = `${ok} OK`;
+  document.getElementById('attnPill').textContent = `${attn} need attention`;
+  document.getElementById('pendingPill').textContent = `${pending} not yet checked`;
+}
+
+function refNumber(tag){
+  const d = new Date();
+  return `ELEC-${tag}-${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}-${String(d.getHours()).padStart(2,'0')}${String(d.getMinutes()).padStart(2,'0')}`;
+}
+
+const statusIcon = { ok: '✓', attn: '⚠', na: '—', pending: '○' };
+
+function buildGroupReportHtml(gi){
+  const group = timelineGroups[gi];
+  let itemsHtml = '';
+  group.items.forEach((it, ii) => {
+    const k = keyFor(gi, ii);
+    const s = state[k].status || 'pending';
+    itemsHtml += `<div class="report-item r-${s}">
+      <span class="ricon">${statusIcon[s]}</span>
+      <span>${it.text}
+        ${s === 'attn' && state[k].note ? `<span class="rnote">— ${state[k].note}</span>` : ''}
+      </span>
+    </div>`;
+  });
+  return `<div class="report-group">
+    <div class="report-group-title">${group.title}</div>
+    ${itemsHtml}
+  </div>`;
+}
+
+function generateReport(gi){
+  const site = document.getElementById('siteField').value || '(site not entered)';
+  const date = document.getElementById('dateField').value || '(date not entered)';
+  const checker = document.getElementById('checkerField').value || '(name not entered)';
+
+  const isSingleGroup = (gi !== null && gi !== undefined);
+  const ref = refNumber(isSingleGroup ? timelineGroups[gi].title.toUpperCase().replace(/\s+/g,'-') : 'FULL');
+  const titleSuffix = isSingleGroup ? `— ${timelineGroups[gi].title} Summary` : '— Full Summary';
+
+  let ok=0, attn=0, na=0, pending=0;
+  const groupIndices = isSingleGroup ? [gi] : timelineGroups.map((_, i) => i);
+  groupIndices.forEach(idx => {
+    const c = groupCounts(idx);
+    ok += c.ok; attn += c.attn; na += c.na; pending += c.pending;
+  });
+
+  let groupsHtml = groupIndices.map(idx => buildGroupReportHtml(idx)).join('');
+
+  document.getElementById('reportContent').innerHTML = `
+    <div class="report-ref">Reference: ${ref}</div>
+    <h2>Electrical Safety Check ${titleSuffix}</h2>
+    <div class="report-meta">${site} &nbsp;·&nbsp; ${date} &nbsp;·&nbsp; Checked by ${checker}</div>
+    <div class="report-summary-line">${ok} OK &nbsp;·&nbsp; ${attn} need attention &nbsp;·&nbsp; ${na} N/A &nbsp;·&nbsp; ${pending} not checked</div>
+    ${groupsHtml}
+  `;
+  document.getElementById('reportBox').classList.add('show');
+  document.body.classList.add('report-mode');
+  document.getElementById('reportBox').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+document.getElementById('fullReportBtn').addEventListener('click', () => generateReport(null));
+document.getElementById('printBtn').addEventListener('click', () => window.print());
+document.getElementById('closeReportBtn').addEventListener('click', () => {
+  document.getElementById('reportBox').classList.remove('show');
+  document.body.classList.remove('report-mode');
+  window.scrollTo({top:0, behavior:'smooth'});
+});
+document.getElementById('resetBtn').addEventListener('click', () => {
+  if(confirm('Reset all answers for this check?')){
+    state = {};
+    document.getElementById('reportBox').classList.remove('show');
+    document.body.classList.remove('report-mode');
+    buildChecklist();
+    updateSummary();
+  }
+});
+
+// ---- Safe isolation procedure ----
+const isolationSteps = [
+  "Identify the correct circuit/equipment to be isolated using verified drawings or labelling — not assumption",
+  "Switch off and isolate at the source (e.g. MCB, local isolator)",
+  "Lock off the isolation point and apply a warning tag stating who is working and why",
+  "Prove your voltage indicator/test equipment is working on a known live source before testing",
+  "Test the isolated circuit/equipment on all conductors to confirm it is dead",
+  "Re-prove the test equipment on the known live source again, to confirm it was still working correctly when you tested dead",
+  "Only begin work once every step above is confirmed",
+];
+let isoChecks = {};
+
+function buildIsolation(){
+  const wrap = document.getElementById('isolationWrap');
+  let html = `<div class="meta-row">
+    <div class="meta-field"><label>Site</label><input type="text" id="isoSiteField" placeholder="e.g. Avanti House Primary"></div>
+    <div class="meta-field"><label>Date / time</label><input type="datetime-local" id="isoDateField"></div>
+  </div>
+  <div class="meta-row">
+    <div class="meta-field"><label>Circuit / equipment</label><input type="text" id="isoCircuitField" placeholder="e.g. Kitchen ring main, DB2 way 4"></div>
+    <div class="meta-field"><label>Isolated by</label><input type="text" id="isoByField" placeholder="Name"></div>
+  </div>`;
+  isolationSteps.forEach((text, i) => {
+    isoChecks[i] = false;
+    html += `<div class="step-item" id="iso-step-${i}">
+      <span class="step-num">${i+1}</span>
+      <input type="checkbox" id="iso-chk-${i}" data-idx="${i}">
+      <div class="step-text"><label for="iso-chk-${i}">${text}</label></div>
+    </div>`;
+  });
+  html += `<div class="actions">
+    <button class="btn-primary" id="isoRecordBtn" disabled>Generate isolation record</button>
+  </div>`;
+  wrap.innerHTML = html;
+
+  wrap.querySelectorAll('input[type=checkbox]').forEach(cb => {
+    cb.addEventListener('change', () => {
+      const idx = cb.getAttribute('data-idx');
+      isoChecks[idx] = cb.checked;
+      document.getElementById(`iso-step-${idx}`).classList.toggle('checked', cb.checked);
+      const allDone = Object.values(isoChecks).every(v => v === true);
+      document.getElementById('isoRecordBtn').disabled = !allDone;
+    });
+  });
+  document.getElementById('isoRecordBtn').addEventListener('click', generateIsolationRecord);
+}
+
+function generateIsolationRecord(){
+  const site = document.getElementById('isoSiteField').value || '(site not entered)';
+  const dt = document.getElementById('isoDateField').value || '(date/time not entered)';
+  const circuit = document.getElementById('isoCircuitField').value || '(not entered)';
+  const by = document.getElementById('isoByField').value || '(not entered)';
+  const ref = refNumber('ISOLATION');
+
+  let stepsHtml = isolationSteps.map(text => `<div class="report-item r-ok"><span class="ricon">✓</span><span>${text}</span></div>`).join('');
+
+  document.getElementById('reportContent').innerHTML = `
+    <div class="report-ref">Reference: ${ref}</div>
+    <h2>Safe Isolation Record</h2>
+    <div class="report-meta">${site} &nbsp;·&nbsp; ${dt} &nbsp;·&nbsp; Isolated by ${by}</div>
+    <div class="report-summary-line">Circuit / equipment: ${circuit}</div>
+    <div class="report-group">
+      <div class="report-group-title">Steps confirmed</div>
+      ${stepsHtml}
+    </div>
+  `;
+  document.getElementById('reportBox').classList.add('show');
+  document.body.classList.add('report-mode');
+  document.getElementById('reportBox').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+buildChecklist();
+updateSummary();
+buildIsolation();
+</script>
+</body>
+</html>

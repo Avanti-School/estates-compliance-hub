@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>COSHH Self-Check — Avanti Estates</title>
+<style>
+  :root{
+    --ink:#1b2420;
+    --paper:#f7f5ef;
+    --card:#ffffff;
+    --line:#d8d3c4;
+    --amber:#b5651d;
+    --amber-dark:#8a4a15;
+    --red:#a3312a;
+    --red-bg:#fbeceb;
+    --green:#3c6e47;
+    --green-bg:#eaf3ec;
+    --grey-bg:#eeece4;
+    --mono: 'JetBrains Mono', 'SF Mono', ui-monospace, monospace;
+    --serif: 'Iowan Old Style', 'Georgia', serif;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:640px;margin:0 auto;padding:20px 18px 60px;}
+
+  header{padding:22px 0 18px;border-bottom:2px solid var(--ink);margin-bottom:22px;}
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--amber-dark);
+    margin-bottom:6px;
+  }
+  h1{
+    font-family:var(--serif);
+    font-size:28px;
+    font-weight:600;
+    margin:0 0 6px;
+    letter-spacing:-0.01em;
+  }
+  .sub{font-size:14px;color:#5b5648;max-width:52ch;}
+
+  .progress{display:flex;gap:4px;margin:18px 0 28px;}
+  .progress .seg{flex:1;height:3px;background:var(--line);border-radius:2px;transition:background .2s;}
+  .progress .seg.done{background:var(--ink);}
+
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:22px 20px;
+    margin-bottom:14px;
+  }
+  .qnum{font-family:var(--mono);font-size:11px;color:#8a8570;margin-bottom:8px;letter-spacing:0.05em;}
+  .qtext{font-size:17px;font-weight:600;margin-bottom:4px;line-height:1.35;}
+  .qhelp{font-size:13.5px;color:#6b6656;margin-bottom:16px;}
+  .options{display:flex;flex-direction:column;gap:8px;}
+  .opt{
+    text-align:left;
+    padding:13px 15px;
+    border:1.5px solid var(--line);
+    border-radius:8px;
+    background:var(--paper);
+    font-size:15px;
+    font-weight:500;
+    color:var(--ink);
+    cursor:pointer;
+    transition:border-color .15s, background .15s;
+  }
+  .opt:hover{border-color:var(--ink);background:#efece2;}
+  .opt:active{transform:scale(0.995);}
+  .opt .desc{display:block;font-weight:400;font-size:12.5px;color:#7a7562;margin-top:2px;}
+
+  .backrow{margin-top:16px;}
+  .backbtn{
+    font-family:var(--mono);
+    font-size:12px;
+    color:#8a8570;
+    background:none;
+    border:none;
+    cursor:pointer;
+    padding:6px 0;
+    text-decoration:underline;
+    text-underline-offset:3px;
+  }
+
+  .result{border-radius:10px;padding:24px 20px 22px;border:1.5px solid;}
+  .result.attn{background:var(--red-bg);border-color:#e0b8b5;}
+  .result.caution{background:#fdf3e6;border-color:#e6c896;}
+  .result.clear{background:var(--green-bg);border-color:#bcd9c3;}
+
+  .result-tag{
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    margin-bottom:8px;
+  }
+  .result.attn .result-tag{color:var(--red);}
+  .result.caution .result-tag{color:var(--amber-dark);}
+  .result.clear .result-tag{color:var(--green);}
+
+  .result-head{font-family:var(--serif);font-size:22px;font-weight:600;margin-bottom:10px;line-height:1.25;}
+  .result-body{font-size:14.5px;margin-bottom:14px;}
+  .result-body p{margin:0 0 10px;}
+  .result-body ul{margin:0 0 10px;padding-left:20px;}
+  .result-body li{margin-bottom:5px;}
+
+  .checklist-box{
+    background:rgba(0,0,0,0.04);
+    border-radius:8px;
+    padding:12px 14px;
+    margin-bottom:14px;
+  }
+  .checklist-box .clabel{
+    font-family:var(--mono);
+    font-size:10.5px;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    color:#6b6656;
+    margin-bottom:6px;
+  }
+
+  .restart{
+    display:inline-block;
+    margin-top:6px;
+    font-family:var(--mono);
+    font-size:12.5px;
+    color:var(--ink);
+    background:var(--card);
+    border:1.5px solid var(--ink);
+    border-radius:7px;
+    padding:9px 16px;
+    cursor:pointer;
+  }
+
+  footer{
+    margin-top:34px;
+    padding-top:16px;
+    border-top:1px solid var(--line);
+    font-size:11.5px;
+    color:#8a8570;
+    font-family:var(--mono);
+    line-height:1.6;
+  }
+  footer a{color:#6b6656;}
+
+  .who-note{
+    font-size:12.5px;
+    color:#7a7562;
+    background:var(--grey-bg);
+    border-radius:7px;
+    padding:10px 13px;
+    margin-top:16px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="backlink" href="index.html" style="font-family:var(--mono);font-size:11.5px;color:#8a8570;text-decoration:none;display:inline-block;margin-bottom:14px;">&larr; Estates Compliance Hub</a>
+  <header>
+    <div class="eyebrow">Avanti Schools Trust — Estates</div>
+    <h1>COSHH self-check</h1>
+    <div class="sub">Before using, storing, or working with a substance on site, work through this to check what controls apply under COSHH.</div>
+  </header>
+
+  <div class="progress" id="progress"></div>
+  <div id="stage"></div>
+
+  <footer>
+    Based on HSE COSHH guidance (hse.gov.uk/coshh), current as of Aug 2026.<br>
+    This tool gives a steer, not a substitute for your site's full COSHH assessment — always check the substance's Safety Data Sheet (SDS) before use.<br>
+    If a substance is not clearly labelled or you don't have a data sheet for it, stop and ask before using it.
+  </footer>
+</div>
+
+<script>
+const stageEl = document.getElementById('stage');
+const progressEl = document.getElementById('progress');
+const TOTAL_STEPS = 4;
+
+const nodes = {
+
+  start: {
+    q: "What are you dealing with?",
+    help: "COSHH covers substances hazardous to health used, stored, or generated by work activity — not just things labelled 'chemical'.",
+    options: [
+      { label: "A cleaning product, chemical, adhesive, paint, or similar labelled substance", next: "labelled" },
+      { label: "Dust, fumes, or vapour generated by a task (e.g. cutting, sanding, welding)", next: "R_PROCESS_GENERATED" },
+      { label: "A biological hazard", desc: "e.g. legionella risk in water systems, mould, pigeon droppings, sewage", next: "R_BIOLOGICAL" },
+      { label: "Not sure / just checking general awareness", next: "R_UNSURE" },
+    ]
+  },
+
+  labelled: {
+    q: "Does the container have a hazard warning symbol or COSHH label on it?",
+    help: "Look for the diamond-shaped orange/red hazard pictograms (flame, skull, corrosion, exclamation mark, etc.)",
+    options: [
+      { label: "Yes, it has a hazard symbol", next: "sds_check" },
+      { label: "No visible hazard symbol, or it's unlabelled", next: "R_UNLABELLED" },
+      { label: "It's a everyday item generally treated as low-risk", desc: "e.g. standard washing-up liquid, hand soap — still check if unsure", next: "R_LOW_RISK" },
+    ]
+  },
+
+  sds_check: {
+    q: "Do you have access to the Safety Data Sheet (SDS) for this substance?",
+    help: "Every hazardous substance on site should have an SDS on file, usually supplied by the manufacturer or held centrally by your site.",
+    options: [
+      { label: "Yes, the SDS is available and I've read it", next: "assessment_check" },
+      { label: "No, I don't have it / can't find it", next: "R_NO_SDS" },
+    ]
+  },
+
+  assessment_check: {
+    q: "Is there an existing COSHH risk assessment on file for this substance and task?",
+    help: "This should cover how it's used, controls required, and PPE needed for this specific activity.",
+    options: [
+      { label: "Yes, there's a current assessment covering this use", next: "R_HAS_ASSESSMENT" },
+      { label: "No, or I'm not sure one exists", next: "R_NO_ASSESSMENT" },
+    ]
+  },
+
+};
+
+const results = {
+
+  R_PROCESS_GENERATED: {
+    tag: "Caution — controls required",
+    cls: "caution",
+    head: "Process-generated hazards need their own controls",
+    body: `<p>Dust, fumes and vapour created by a work activity (cutting, sanding, welding, soldering) fall under COSHH even though there's no product label to check.</p>
+           <ul>
+             <li>Check whether a task-specific risk assessment/method statement exists for this activity.</li>
+             <li>Local exhaust ventilation (LEV), dust extraction, or appropriate RPE (respiratory protective equipment) is likely required — don't rely on a standard dust mask for fine or hazardous dusts.</li>
+             <li>If this involves cutting into a wall, floor, ceiling, or pipe lagging, <b>check the asbestos register first</b> before starting work.</li>
+           </ul>`,
+    action: "Confirm task-specific controls with your Area Manager or H&S lead before starting"
+  },
+
+  R_BIOLOGICAL: {
+    tag: "Caution — controls required",
+    cls: "caution",
+    head: "Biological agents fall under COSHH",
+    body: `<p>Legionella, mould, and contamination from bird/animal droppings are all biological agents controlled under COSHH.</p>
+           <ul>
+             <li>Legionella: check whether this is covered by your site's water hygiene/legionella risk assessment and management scheme — don't disturb water tanks or systems without following that procedure.</li>
+             <li>Bird/animal droppings: avoid dry sweeping or disturbing dried droppings (this raises spores) — use appropriate PPE and damp-down methods, or bring in a specialist contractor for larger jobs.</li>
+             <li>Mould: for anything beyond a small, easily-cleaned patch, treat as a task requiring assessment rather than routine cleaning.</li>
+           </ul>`,
+    action: "Check the relevant site-specific scheme (e.g. legionella management plan) before proceeding"
+  },
+
+  R_UNSURE: {
+    tag: "Not sure yet",
+    cls: "caution",
+    head: "Start by identifying what you're dealing with",
+    body: `<p>COSHH applies to almost anything hazardous to health used or generated at work — cleaning chemicals, fuels, adhesives, dusts, fumes, and biological agents.</p>
+           <ul>
+             <li>If you're looking at a specific product or task, come back through this checker and select the option that matches.</li>
+             <li>As a rule of thumb: if it has a hazard label, creates dust/fumes, or could carry a biological risk, treat it as COSHH-relevant until you've checked otherwise.</li>
+           </ul>`,
+    action: "Re-run this check once you know what specifically you're working with"
+  },
+
+  R_UNLABELLED: {
+    tag: "Stop — check before use",
+    cls: "attn",
+    head: "Don't use it until you know what it is",
+    body: `<p>An unlabelled or unclear container is a stop point, not a judgement call.</p>
+           <ul>
+             <li>Don't use, decant, or dispose of the substance until it's identified.</li>
+             <li>Check if it matches a labelled product you already hold on site (e.g. it's been decanted from a labelled container).</li>
+             <li>If it can't be identified, isolate it safely and flag it to your Site Manager or Area Manager — treat as potentially hazardous until proven otherwise.</li>
+           </ul>`,
+    action: "Do not use — identify or isolate, then escalate"
+  },
+
+  R_LOW_RISK: {
+    tag: "Likely low risk",
+    cls: "clear",
+    head: "Standard precautions apply",
+    body: `<p>Everyday low-hazard products still fall technically within COSHH's scope, but the control measures are usually minimal — general good hygiene practice is often sufficient.</p>
+           <ul>
+             <li>Still avoid skin/eye contact and follow any basic instructions on the label.</li>
+             <li>If you're ever unsure whether something counts as "low risk", check the label for hazard symbols or ask before assuming.</li>
+           </ul>`,
+    action: "No formal COSHH assessment likely needed — follow label instructions"
+  },
+
+  R_NO_SDS: {
+    tag: "Stop — get the data sheet first",
+    cls: "attn",
+    head: "Don't proceed without the Safety Data Sheet",
+    body: `<p>A hazard-labelled substance without an accessible SDS is a gap that needs closing before use, not after.</p>
+           <ul>
+             <li>Request the SDS from your supplier, or check if it's held centrally (many trusts keep a shared SDS folder/register).</li>
+             <li>Manufacturers are legally required to provide an SDS on request for any hazardous substance they supply.</li>
+             <li>Don't use the substance based on label information alone if the task involves anything beyond the most basic, intended use.</li>
+           </ul>`,
+    action: "Source the SDS before use, and file it in your site's COSHH register"
+  },
+
+  R_HAS_ASSESSMENT: {
+    tag: "Clear to proceed",
+    cls: "clear",
+    head: "Follow the existing assessment",
+    body: `<p>You have an SDS and a current COSHH assessment covering this substance and task — you're set to proceed.</p>
+           <ul>
+             <li>Follow the PPE, ventilation, and storage requirements set out in the assessment.</li>
+             <li>If the task, quantity, or method differs from what the assessment covers, treat it as a new activity and get it reassessed rather than assuming it's covered.</li>
+           </ul>`,
+    action: "Proceed following the existing COSHH assessment"
+  },
+
+  R_NO_ASSESSMENT: {
+    tag: "Caution — assessment needed",
+    cls: "caution",
+    head: "This activity needs a COSHH assessment before regular use",
+    body: `<p>Having the SDS is a good start, but a one-off read of the data sheet isn't the same as a task-specific COSHH assessment.</p>
+           <ul>
+             <li>For a genuine one-off, low-quantity use, follow the SDS control/PPE guidance as an interim measure.</li>
+             <li>For anything regular or higher-risk, flag to your Site Manager or Area Manager so a proper assessment gets written and added to your site's COSHH register.</li>
+           </ul>`,
+    action: "Use SDS guidance as interim controls, then raise for a formal assessment"
+  },
+
+};
+
+let history = ['start'];
+
+function renderProgress(depth){
+  progressEl.innerHTML = '';
+  for(let i=0;i<TOTAL_STEPS;i++){
+    const seg = document.createElement('div');
+    seg.className = 'seg' + (i < depth ? ' done' : '');
+    progressEl.appendChild(seg);
+  }
+}
+
+function renderNode(id){
+  if(id.startsWith('R_')){
+    renderResult(results[id]);
+    return;
+  }
+  const node = nodes[id];
+  renderProgress(history.length);
+  const idx = history.length;
+  let html = `<div class="card">
+    <div class="qnum">Step ${idx}</div>
+    <div class="qtext">${node.q}</div>
+    ${node.help ? `<div class="qhelp">${node.help}</div>` : ''}
+    <div class="options">`;
+  node.options.forEach(opt => {
+    html += `<button class="opt" data-next="${opt.next}">${opt.label}${opt.desc ? `<span class="desc">${opt.desc}</span>` : ''}</button>`;
+  });
+  html += `</div></div>`;
+  if(history.length > 1){
+    html += `<div class="backrow"><button class="backbtn" id="backBtn">&larr; back</button></div>`;
+  }
+  stageEl.innerHTML = html;
+
+  stageEl.querySelectorAll('.opt').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const next = btn.getAttribute('data-next');
+      history.push(next);
+      renderNode(next);
+      window.scrollTo({top:0, behavior:'smooth'});
+    });
+  });
+  const backBtn = document.getElementById('backBtn');
+  if(backBtn){
+    backBtn.addEventListener('click', ()=>{
+      history.pop();
+      renderNode(history[history.length-1]);
+    });
+  }
+}
+
+function renderResult(result){
+  renderProgress(TOTAL_STEPS);
+  stageEl.innerHTML = `
+    <div class="result ${result.cls}">
+      <div class="result-tag">${result.tag}</div>
+      <div class="result-head">${result.head}</div>
+      <div class="result-body">${result.body}</div>
+      <div class="checklist-box">
+        <div class="clabel">Next step</div>
+        ${result.action}
+      </div>
+      <button class="restart" id="restartBtn">Check another substance/task</button>
+    </div>
+    <div class="who-note">Ambiguous or higher-risk cases — always confirm with your Site Manager, Area Manager, or the Trust H&S lead before proceeding.</div>
+  `;
+  document.getElementById('restartBtn').addEventListener('click', ()=>{
+    history = ['start'];
+    renderNode('start');
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+}
+
+renderNode('start');
+</script>
+</body>
+</html>

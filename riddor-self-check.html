@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RIDDOR Self-Check — Avanti Estates</title>
+<style>
+  :root{
+    --ink:#1b2420;
+    --paper:#f7f5ef;
+    --card:#ffffff;
+    --line:#d8d3c4;
+    --amber:#b5651d;
+    --amber-dark:#8a4a15;
+    --red:#a3312a;
+    --red-bg:#fbeceb;
+    --green:#3c6e47;
+    --green-bg:#eaf3ec;
+    --grey-bg:#eeece4;
+    --mono: 'JetBrains Mono', 'SF Mono', ui-monospace, monospace;
+    --serif: 'Iowan Old Style', 'Georgia', serif;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:640px;margin:0 auto;padding:20px 18px 60px;}
+
+  header{padding:22px 0 18px;border-bottom:2px solid var(--ink);margin-bottom:22px;}
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--amber-dark);
+    margin-bottom:6px;
+  }
+  h1{
+    font-family:var(--serif);
+    font-size:28px;
+    font-weight:600;
+    margin:0 0 6px;
+    letter-spacing:-0.01em;
+  }
+  .sub{font-size:14px;color:#5b5648;max-width:52ch;}
+
+  .progress{
+    display:flex;
+    gap:4px;
+    margin:18px 0 28px;
+  }
+  .progress .seg{
+    flex:1;
+    height:3px;
+    background:var(--line);
+    border-radius:2px;
+    transition:background .2s;
+  }
+  .progress .seg.done{background:var(--ink);}
+
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:22px 20px;
+    margin-bottom:14px;
+  }
+  .qnum{
+    font-family:var(--mono);
+    font-size:11px;
+    color:#8a8570;
+    margin-bottom:8px;
+    letter-spacing:0.05em;
+  }
+  .qtext{
+    font-size:17px;
+    font-weight:600;
+    margin-bottom:4px;
+    line-height:1.35;
+  }
+  .qhelp{
+    font-size:13.5px;
+    color:#6b6656;
+    margin-bottom:16px;
+  }
+  .options{display:flex;flex-direction:column;gap:8px;}
+  .opt{
+    text-align:left;
+    padding:13px 15px;
+    border:1.5px solid var(--line);
+    border-radius:8px;
+    background:var(--paper);
+    font-size:15px;
+    font-weight:500;
+    color:var(--ink);
+    cursor:pointer;
+    transition:border-color .15s, background .15s;
+  }
+  .opt:hover{border-color:var(--ink);background:#efece2;}
+  .opt:active{transform:scale(0.995);}
+  .opt .desc{display:block;font-weight:400;font-size:12.5px;color:#7a7562;margin-top:2px;}
+
+  .backrow{margin-top:16px;}
+  .backbtn{
+    font-family:var(--mono);
+    font-size:12px;
+    color:#8a8570;
+    background:none;
+    border:none;
+    cursor:pointer;
+    padding:6px 0;
+    text-decoration:underline;
+    text-underline-offset:3px;
+  }
+
+  .result{
+    border-radius:10px;
+    padding:24px 20px 22px;
+    border:1.5px solid;
+  }
+  .result.reportable{background:var(--red-bg);border-color:#e0b8b5;}
+  .result.record{background:#fdf3e6;border-color:#e6c896;}
+  .result.no{background:var(--green-bg);border-color:#bcd9c3;}
+
+  .result-tag{
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    margin-bottom:8px;
+  }
+  .result.reportable .result-tag{color:var(--red);}
+  .result.record .result-tag{color:var(--amber-dark);}
+  .result.no .result-tag{color:var(--green);}
+
+  .result-head{
+    font-family:var(--serif);
+    font-size:22px;
+    font-weight:600;
+    margin-bottom:10px;
+    line-height:1.25;
+  }
+  .result-body{font-size:14.5px;margin-bottom:14px;}
+  .result-body p{margin:0 0 10px;}
+  .result-body ul{margin:0 0 10px;padding-left:20px;}
+  .result-body li{margin-bottom:5px;}
+
+  .deadline{
+    display:inline-flex;
+    align-items:baseline;
+    gap:6px;
+    background:rgba(0,0,0,0.06);
+    border-radius:6px;
+    padding:8px 12px;
+    font-family:var(--mono);
+    font-size:13px;
+    margin-bottom:14px;
+  }
+  .deadline b{font-size:15px;}
+
+  .restart{
+    display:inline-block;
+    margin-top:6px;
+    font-family:var(--mono);
+    font-size:12.5px;
+    color:var(--ink);
+    background:var(--card);
+    border:1.5px solid var(--ink);
+    border-radius:7px;
+    padding:9px 16px;
+    cursor:pointer;
+  }
+
+  footer{
+    margin-top:34px;
+    padding-top:16px;
+    border-top:1px solid var(--line);
+    font-size:11.5px;
+    color:#8a8570;
+    font-family:var(--mono);
+    line-height:1.6;
+  }
+  footer a{color:#6b6656;}
+
+  .who-note{
+    font-size:12.5px;
+    color:#7a7562;
+    background:var(--grey-bg);
+    border-radius:7px;
+    padding:10px 13px;
+    margin-top:16px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="backlink" href="index.html" style="font-family:var(--mono);font-size:11.5px;color:#8a8570;text-decoration:none;display:inline-block;margin-bottom:14px;">&larr; Estates Compliance Hub</a>
+
+  <header>
+    <div class="eyebrow">Avanti Schools Trust — Estates</div>
+    <h1>Is this RIDDOR reportable?</h1>
+    <div class="sub">Work through the questions to check whether an incident needs to be reported to HSE under RIDDOR 2013, just recorded internally, or neither.</div>
+  </header>
+
+  <div class="progress" id="progress"></div>
+  <div id="stage"></div>
+
+  <footer>
+    Based on HSE RIDDOR guidance (hse.gov.uk/riddor), current as of Aug 2026.<br>
+    This tool gives a steer, not a legal ruling — confirm judgement calls with your Head of Estates or H&S lead before deciding not to report.<br>
+    Report via the <a href="https://www.hse.gov.uk/riddor/report.htm" target="_blank">HSE online portal</a>. Serious/fatal incidents: call HSE on 0345 300 9923 without delay.
+  </footer>
+</div>
+
+<script>
+const stageEl = document.getElementById('stage');
+const progressEl = document.getElementById('progress');
+
+// ---- Tree definition ----
+// Each node: {id, q, help, options:[{label, desc, next}]}
+// Result nodes: {id, result:{tag, head, body(html), deadline}}
+
+const TOTAL_STEPS = 4; // for progress bar estimate
+
+const nodes = {
+
+  start: {
+    q: "Was the person injured (or has died) as a direct result of a work activity?",
+    help: "Work-relatedness is the first test for RIDDOR. This covers staff, contractors, and anyone affected by the work being carried out — not just accidents that happen to occur on site.",
+    options: [
+      { label: "Yes — injury or death, work-related", next: "who" },
+      { label: "No injury, but something dangerous happened (a near miss)", next: "dangerous" },
+      { label: "It's a diagnosed illness or disease, not an accident", next: "disease" },
+      { label: "It's a gas-related incident (leak, appliance fault)", next: "gas" },
+    ]
+  },
+
+  who: {
+    q: "Who was injured?",
+    help: "RIDDOR treats injuries to your own staff/contractors differently from injuries to pupils, visitors or members of the public.",
+    options: [
+      { label: "A member of staff, contractor, or self-employed worker", next: "worker_severity" },
+      { label: "A pupil, visitor, parent or member of the public", next: "nonworker_severity" },
+    ]
+  },
+
+  worker_severity: {
+    q: "What was the outcome for the worker?",
+    help: "Choose the most serious outcome that applies.",
+    options: [
+      { label: "Died as a result of the accident", next: "R_DEATH" },
+      {
+        label: "Specified injury",
+        desc: "Fracture (not finger/thumb/toe) · amputation · loss/reduction of sight · crush injury to head/torso · serious burn over 10% of body · scalping needing hospital treatment · loss of consciousness from head injury or asphyxia · confined-space injury needing resuscitation or 24hr+ hospital admission",
+        next: "R_SPECIFIED"
+      },
+      { label: "Off work / unable to do normal duties for more than 7 consecutive days", next: "R_OVER7" },
+      { label: "Off work / unable to do normal duties for more than 3 but not more than 7 days", next: "R_OVER3" },
+      { label: "Minor injury, back to normal duties within 3 days", next: "R_MINOR" },
+    ]
+  },
+
+  nonworker_severity: {
+    q: "What happened to them?",
+    help: "For non-workers (pupils, visitors, public), the test is about hospital treatment, not days off.",
+    options: [
+      { label: "Died as a result of the accident", next: "R_DEATH" },
+      { label: "Specified injury (as listed for workers) occurring on hospital premises", next: "R_SPECIFIED" },
+      {
+        label: "Taken directly from the scene to hospital for treatment",
+        desc: "Only counts if they received actual treatment — a dressing, stitches, plaster cast or surgery. Being checked over or X-rayed alone does not count.",
+        next: "R_NONWORKER_HOSPITAL"
+      },
+      { label: "Injured but not taken to hospital, or taken only as a precaution", next: "R_MINOR" },
+    ]
+  },
+
+  dangerous: {
+    q: "What kind of dangerous occurrence was it?",
+    help: "Only specific categories in Schedule 2 of RIDDOR count — not every near miss. Common ones on a school estate:",
+    options: [
+      {
+        label: "Structural collapse or failure",
+        desc: "e.g. collapse of scaffolding over 5m, or any building/structure collapse that could have caused serious injury",
+        next: "R_DANGEROUS"
+      },
+      {
+        label: "Uncontrolled release of a hazardous substance, biological agent, or radiation",
+        desc: "e.g. legionella exposure incident, chemical spill with risk of serious injury",
+        next: "R_DANGEROUS"
+      },
+      {
+        label: "Electrical short circuit/fire causing plant to stop for 24+ hours",
+        desc: "or an explosion/fire caused by electrical equipment",
+        next: "R_DANGEROUS"
+      },
+      {
+        label: "Failure of a lifting device, pressure system, or breathing apparatus",
+        next: "R_DANGEROUS"
+      },
+      {
+        label: "None of these — it was a lower-level near miss (no one hurt, no scheduled category)",
+        next: "R_NEARMISS_RECORD"
+      },
+    ]
+  },
+
+  disease: {
+    q: "Which type of disease/condition is it?",
+    help: "Must be formally diagnosed by a doctor and linked to the person's work.",
+    options: [
+      {
+        label: "Occupational condition on HSE's list",
+        desc: "e.g. carpal tunnel syndrome, hand-arm vibration syndrome, occupational dermatitis, occupational asthma, tendonitis from repetitive work",
+        next: "R_DISEASE"
+      },
+      {
+        label: "Occupational cancer or disease linked to a biological agent",
+        desc: "e.g. mesothelioma linked to asbestos exposure, legionella infection from site plant",
+        next: "R_DISEASE"
+      },
+      {
+        label: "General illness with no clear work link (e.g. a cold, flu, unrelated condition)",
+        next: "R_NOT_REPORTABLE"
+      },
+    ]
+  },
+
+  gas: {
+    q: "What happened?",
+    help: "",
+    options: [
+      { label: "Someone died, lost consciousness, or was taken to hospital because of a gas leak, fire or fault", next: "R_GAS" },
+      { label: "A Gas Safe engineer found an appliance/fitting dangerous enough that it could cause death, unconsciousness or need hospital treatment", next: "R_GAS" },
+      { label: "Neither of the above — a minor gas fault with no danger to people", next: "R_NOT_REPORTABLE" },
+    ]
+  },
+
+  // ---- Results ----
+
+  R_DEATH: {
+    result: {
+      tag: "Reportable — Death",
+      head: "Report this without delay",
+      body: `<p>Any work-related death must be reported to HSE, with the exception of suicide.</p>
+             <ul>
+               <li>Notify HSE <b>without delay</b> — call 0345 300 9923 immediately if within office hours.</li>
+               <li>Follow up with a full written report within <b>10 days</b> via the HSE online portal.</li>
+               <li>If someone dies within 365 days of a reportable injury from the same accident, this also counts as a fatality and must be reported.</li>
+             </ul>
+             <p>Escalate to your Head of Estates and Trust safeguarding/H&S lead immediately — this level of incident needs senior sign-off on the response as well as the report.</p>`,
+      deadline: "Without delay, then written report within 10 days"
+    }
+  },
+
+  R_SPECIFIED: {
+    result: {
+      tag: "Reportable — Specified injury",
+      head: "Report this without delay",
+      body: `<p>This falls under RIDDOR's list of specified injuries and must be reported to HSE.</p>
+             <ul>
+               <li>Notify HSE <b>without delay</b> — phone reporting is fastest for specified injuries during office hours.</li>
+               <li>Submit the full written report within <b>10 days</b>.</li>
+             </ul>
+             <p>Keep a copy of the submitted report and reference number in your own site accident records.</p>`,
+      deadline: "Without delay, then written report within 10 days"
+    }
+  },
+
+  R_OVER7: {
+    result: {
+      tag: "Reportable — Over-7-day incapacitation",
+      head: "Report this within 15 days",
+      body: `<p>Because the worker was unable to do their normal duties for more than 7 consecutive days (not counting the day of the accident, but including weekends), this must be reported.</p>
+             <ul>
+               <li>The 15-day clock starts from the <b>date of the accident</b>, not from the day the 7-day threshold is crossed.</li>
+               <li>If it isn't clear yet whether they'll be off for more than 7 days, hold off reporting until the threshold is actually crossed — but don't miss the 15-day deadline once it is.</li>
+             </ul>`,
+      deadline: "Written report within 15 days of the accident"
+    }
+  },
+
+  R_OVER3: {
+    result: {
+      tag: "Not RIDDOR-reportable — but must be recorded",
+      head: "Log it in your accident book",
+      body: `<p>Over-3-day (but not over-7-day) incapacitation doesn't need to be reported to HSE. You still have a legal duty to record it.</p>
+             <ul>
+               <li>Enter it in your site accident book under social security law.</li>
+               <li>Keep monitoring — if the person is still off after day 7, this becomes reportable (see the over-7-day outcome).</li>
+             </ul>`,
+      deadline: "No HSE report required — record only"
+    }
+  },
+
+  R_NONWORKER_HOSPITAL: {
+    result: {
+      tag: "Reportable — Non-worker taken to hospital",
+      head: "Report this within 10 days",
+      body: `<p>A member of the public, pupil or visitor taken directly from the scene to hospital and given actual treatment (dressing, stitches, plaster cast, or surgery) is reportable.</p>
+             <ul>
+               <li>Submit the report to HSE within <b>10 days</b>.</li>
+               <li>If in doubt whether treatment received counts, check with the parent/guardian or hospital, and record what you know at the time.</li>
+             </ul>`,
+      deadline: "Written report within 10 days"
+    }
+  },
+
+  R_DANGEROUS: {
+    result: {
+      tag: "Reportable — Dangerous occurrence",
+      head: "Report this within 10 days",
+      body: `<p>This falls under Schedule 2 of RIDDOR as a reportable dangerous occurrence — reportable regardless of whether anyone was actually injured.</p>
+             <ul>
+               <li>Submit the report to HSE within <b>10 days</b>.</li>
+               <li>Document what happened, what could have happened, and what controls failed — this evidence matters for any follow-up investigation.</li>
+             </ul>`,
+      deadline: "Written report within 10 days"
+    }
+  },
+
+  R_NEARMISS_RECORD: {
+    result: {
+      tag: "Not RIDDOR-reportable",
+      head: "Record it internally",
+      body: `<p>This doesn't fall into one of RIDDOR's specific dangerous occurrence categories, so there's no HSE reporting duty.</p>
+             <ul>
+               <li>Log it as a near miss in your site's H&S records regardless — patterns of near misses are often the best early warning of a bigger problem.</li>
+               <li>If you're unsure whether it might actually fit a scheduled category, check the <a href="https://www.hse.gov.uk/riddor/dangerous-occurences.htm" target="_blank">full Schedule 2 list</a> or ask your H&S lead before ruling it out.</li>
+             </ul>`,
+      deadline: "No HSE report required — record only"
+    }
+  },
+
+  R_DISEASE: {
+    result: {
+      tag: "Reportable — Occupational disease",
+      head: "Report on diagnosis",
+      body: `<p>Diagnosed occupational diseases with an established work link must be reported to HSE.</p>
+             <ul>
+               <li>The report should be made once the diagnosis is confirmed by a doctor and the occupational link is established.</li>
+               <li>Submit via the HSE online portal using the disease reporting form.</li>
+             </ul>`,
+      deadline: "Report as soon as diagnosis and work-link are confirmed"
+    }
+  },
+
+  R_GAS: {
+    result: {
+      tag: "Reportable — Gas incident",
+      head: "Use the dedicated gas incident form",
+      body: `<p>Gas incidents involving death, loss of consciousness, or hospital treatment — or a dangerous appliance/fitting identified by a Gas Safe engineer — have their own reporting route, separate from the standard injury forms.</p>
+             <ul>
+               <li>Use the <a href="https://notifications.hse.gov.uk/riddorforms/FlammableGasIncident" target="_blank">Report of a Flammable Gas Incident</a> form, or</li>
+               <li>The <a href="https://notifications.hse.gov.uk/RiddorForms/DangerousGasFitting" target="_blank">Report of a Dangerous Gas Fitting</a> form, as applicable.</li>
+             </ul>
+             <p>Loop in your gas contractor/Gas Safe engineer immediately — they may have separate reporting duties of their own.</p>`,
+      deadline: "Report promptly via the relevant gas incident form"
+    }
+  },
+
+  R_MINOR: {
+    result: {
+      tag: "Not RIDDOR-reportable",
+      head: "Record it, no HSE report needed",
+      body: `<p>Based on what you've described, this doesn't meet the threshold for RIDDOR reporting.</p>
+             <ul>
+               <li>Still log it in your site accident book — this is a legal requirement regardless of severity, and matters for spotting patterns.</li>
+               <li>If the person's condition worsens later (e.g. they end up off work longer than expected), come back through this checker — the outcome may change.</li>
+             </ul>`,
+      deadline: "No HSE report required — record only"
+    }
+  },
+
+  R_NOT_REPORTABLE: {
+    result: {
+      tag: "Not RIDDOR-reportable",
+      head: "No HSE report needed",
+      body: `<p>Based on what you've described, this falls outside RIDDOR's scope entirely.</p>
+             <p>It's still worth noting on file, particularly if it relates to a recurring issue (e.g. a repeated minor gas fault, or a health concern that could develop into something reportable later).</p>`,
+      deadline: "No action required under RIDDOR"
+    }
+  },
+};
+
+let history = ['start'];
+
+function renderProgress(depth){
+  progressEl.innerHTML = '';
+  for(let i=0;i<TOTAL_STEPS;i++){
+    const seg = document.createElement('div');
+    seg.className = 'seg' + (i < depth ? ' done' : '');
+    progressEl.appendChild(seg);
+  }
+}
+
+function renderNode(id){
+  const node = nodes[id];
+  if(node.result){
+    renderResult(node.result);
+    return;
+  }
+  renderProgress(history.length);
+  const idx = history.length;
+  let html = `<div class="card">
+    <div class="qnum">Step ${idx}</div>
+    <div class="qtext">${node.q}</div>
+    ${node.help ? `<div class="qhelp">${node.help}</div>` : ''}
+    <div class="options">`;
+  node.options.forEach((opt, i) => {
+    html += `<button class="opt" data-next="${opt.next}">${opt.label}${opt.desc ? `<span class="desc">${opt.desc}</span>` : ''}</button>`;
+  });
+  html += `</div></div>`;
+  if(history.length > 1){
+    html += `<div class="backrow"><button class="backbtn" id="backBtn">&larr; back</button></div>`;
+  }
+  stageEl.innerHTML = html;
+
+  stageEl.querySelectorAll('.opt').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const next = btn.getAttribute('data-next');
+      history.push(next);
+      renderNode(next);
+      window.scrollTo({top:0, behavior:'smooth'});
+    });
+  });
+  const backBtn = document.getElementById('backBtn');
+  if(backBtn){
+    backBtn.addEventListener('click', ()=>{
+      history.pop();
+      renderNode(history[history.length-1]);
+    });
+  }
+}
+
+function renderResult(result){
+  renderProgress(TOTAL_STEPS);
+  let cls = 'no';
+  if(result.tag.startsWith('Reportable')) cls = 'reportable';
+  else if(result.tag.includes('must be recorded')) cls = 'record';
+
+  stageEl.innerHTML = `
+    <div class="result ${cls}">
+      <div class="result-tag">${result.tag}</div>
+      <div class="result-head">${result.head}</div>
+      <div class="deadline">⏱ <b>${result.deadline}</b></div>
+      <div class="result-body">${result.body}</div>
+      <button class="restart" id="restartBtn">Check another incident</button>
+    </div>
+    <div class="who-note">This result is based on the answers given. Serious or ambiguous cases — always loop in your Head of Estates or the Trust H&S lead before finalising a decision not to report.</div>
+  `;
+  document.getElementById('restartBtn').addEventListener('click', ()=>{
+    history = ['start'];
+    renderNode('start');
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+}
+
+renderNode('start');
+</script>
+</body>
+</html>

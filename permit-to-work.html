@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Permit to Work — Avanti Estates</title>
+<style>
+  :root{
+    --ink:#1b2420; --paper:#f7f5ef; --card:#ffffff; --line:#d8d3c4;
+    --amber:#b5651d; --amber-dark:#8a4a15; --red:#a3312a; --red-bg:#fbeceb;
+    --green:#3c6e47; --green-bg:#eaf3ec; --grey-bg:#eeece4;
+    --mono: 'JetBrains Mono', 'SF Mono', ui-monospace, monospace;
+    --serif: 'Iowan Old Style', 'Georgia', serif;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:640px;margin:0 auto;padding:20px 18px 60px;}
+  a.backlink{font-family:var(--mono);font-size:11.5px;color:#8a8570;text-decoration:none;display:inline-block;margin-bottom:14px;}
+  a.backlink:hover{text-decoration:underline;}
+  header{padding:22px 0 18px;border-bottom:2px solid var(--ink);margin-bottom:22px;}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--red);margin-bottom:6px;}
+  h1{font-family:var(--serif);font-size:28px;font-weight:600;margin:0 0 6px;letter-spacing:-0.01em;}
+  .sub{font-size:14px;color:#5b5648;max-width:52ch;}
+  .progress{display:flex;gap:4px;margin:18px 0 28px;}
+  .progress .seg{flex:1;height:3px;background:var(--line);border-radius:2px;transition:background .2s;}
+  .progress .seg.done{background:var(--ink);}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:22px 20px;margin-bottom:14px;}
+  .qnum{font-family:var(--mono);font-size:11px;color:#8a8570;margin-bottom:8px;letter-spacing:0.05em;}
+  .qtext{font-size:17px;font-weight:600;margin-bottom:4px;line-height:1.35;}
+  .qhelp{font-size:13.5px;color:#6b6656;margin-bottom:16px;}
+  .options{display:flex;flex-direction:column;gap:8px;}
+  .opt{text-align:left;padding:13px 15px;border:1.5px solid var(--line);border-radius:8px;background:var(--paper);font-size:15px;font-weight:500;color:var(--ink);cursor:pointer;transition:border-color .15s, background .15s;}
+  .opt:hover{border-color:var(--ink);background:#efece2;}
+  .opt:active{transform:scale(0.995);}
+  .opt .desc{display:block;font-weight:400;font-size:12.5px;color:#7a7562;margin-top:2px;}
+  .backrow{margin-top:16px;}
+  .backbtn{font-family:var(--mono);font-size:12px;color:#8a8570;background:none;border:none;cursor:pointer;padding:6px 0;text-decoration:underline;text-underline-offset:3px;}
+
+  .prereq-item{background:var(--card);border:1.5px solid var(--line);border-radius:9px;padding:13px 14px;margin-bottom:8px;display:flex;gap:12px;align-items:flex-start;}
+  .prereq-item.checked{border-color:#bcd9c3;background:var(--green-bg);}
+  .prereq-item input{margin-top:3px;width:18px;height:18px;flex-shrink:0;cursor:pointer;}
+  .prereq-text{font-size:14.5px;line-height:1.4;}
+  .prereq-text a{color:var(--amber-dark);font-weight:600;}
+  .prereq-link-row{margin:4px 0 14px;}
+  .prereq-link-row a{font-family:var(--mono);font-size:12px;color:var(--amber-dark);text-decoration:none;border-bottom:1px dashed var(--amber-dark);}
+
+  .meta-row{display:flex;gap:10px;margin:0 0 10px;flex-wrap:wrap;}
+  .meta-field{flex:1;min-width:140px;}
+  .meta-field.full{flex:1 1 100%;}
+  .meta-field label{display:block;font-family:var(--mono);font-size:10.5px;text-transform:uppercase;letter-spacing:0.06em;color:#8a8570;margin-bottom:4px;}
+  .meta-field input, .meta-field textarea{width:100%;padding:9px 10px;border:1.5px solid var(--line);border-radius:7px;font-size:14px;font-family:inherit;background:var(--card);color:var(--ink);}
+  .meta-field textarea{min-height:64px;resize:vertical;}
+
+  .btn-primary, .btn-secondary{font-family:var(--mono);font-size:12.5px;font-weight:600;padding:11px 18px;border-radius:7px;cursor:pointer;}
+  .btn-primary{background:var(--ink);color:var(--paper);border:1.5px solid var(--ink);}
+  .btn-primary:disabled{opacity:0.4;cursor:not-allowed;}
+  .btn-secondary{background:var(--card);color:var(--ink);border:1.5px solid var(--line);}
+  .actions{margin-top:20px;display:flex;gap:10px;flex-wrap:wrap;}
+
+  .permit{border-radius:10px;padding:24px 20px 22px;border:1.5px solid var(--green);background:var(--green-bg);}
+  .permit-ref{font-family:var(--mono);font-size:12px;color:var(--green);letter-spacing:0.08em;margin-bottom:6px;}
+  .permit-head{font-family:var(--serif);font-size:22px;font-weight:600;margin-bottom:14px;color:var(--ink);}
+  .permit-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 16px;margin-bottom:16px;font-size:13.5px;}
+  .permit-grid .full{grid-column:1 / -1;}
+  .permit-grid dt{font-family:var(--mono);font-size:10.5px;text-transform:uppercase;color:#5b6e5f;margin-bottom:2px;}
+  .permit-grid dd{margin:0;font-weight:500;}
+  .permit-checks{font-size:13.5px;margin-bottom:16px;}
+  .permit-checks li{margin-bottom:4px;}
+  .who-note{font-size:12.5px;color:#7a7562;background:var(--grey-bg);border-radius:7px;padding:10px 13px;margin-top:16px;}
+
+  footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);font-size:11.5px;color:#8a8570;font-family:var(--mono);line-height:1.6;}
+  footer a{color:#6b6656;}
+
+  @media print{
+    a.backlink, footer, .actions, .who-note { display:none; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="backlink" href="index.html">&larr; Estates Compliance Hub</a>
+  <header>
+    <div class="eyebrow">Avanti Schools Trust — Estates</div>
+    <h1>Permit to Work</h1>
+    <div class="sub">The gateway before a contractor or in-house team starts higher-risk work. Confirm the right pre-checks, then issue a signed-off permit record.</div>
+  </header>
+
+  <div class="progress" id="progress"></div>
+  <div id="stage"></div>
+
+  <footer>
+    A Permit to Work formalises that risk-relevant checks were confirmed before work started — it doesn't replace the underlying risk assessment, method statement, or specialist checks (asbestos, working at height, etc.) themselves.<br>
+    For licensed asbestos work, confined space entry, or any work you're unsure about — stop and get advice from your Head of Estates or H&S lead rather than issuing a permit.
+  </footer>
+</div>
+
+<script>
+const stageEl = document.getElementById('stage');
+const progressEl = document.getElementById('progress');
+const TOTAL_STEPS = 3;
+
+const jobTypes = {
+  drilling: {
+    label: "Drilling / fixing into a wall, ceiling, or floor",
+    prereqs: [
+      { text: 'Asbestos register checked for this exact location', link: { href: 'asbestos-permit-check.html', text: 'Run Asbestos Permit Check' } },
+      { text: 'Location confirmed clear, or a method statement agreed for presumed/confirmed ACMs' },
+      { text: 'Services drawings checked (electrical, water, gas runs) before drilling begins' },
+      { text: 'PPE/RPE required by the method statement is available on site' },
+    ]
+  },
+  hotworks: {
+    label: "Hot works (welding, cutting, soldering, blow torch)",
+    prereqs: [
+      { text: 'Area cleared of combustible materials within 10 metres' },
+      { text: 'Appropriate fire extinguisher or fire blanket is on hand at the work location' },
+      { text: 'Fire alarm arrangements agreed with site contact (isolate/inform as needed — never left unsupervised)' },
+      { text: 'Fire watch in place during the work and for at least 30–60 minutes after it finishes' },
+      { text: 'Asbestos register checked if work is near suspected ACMs', link: { href: 'asbestos-permit-check.html', text: 'Run Asbestos Permit Check' } },
+    ]
+  },
+  height: {
+    label: "Working at height (ladder, tower, MEWP, roof access)",
+    prereqs: [
+      { text: 'Working at Height Checklist completed for this task', link: { href: 'working-at-height-checklist.html', text: 'Open Working at Height Checklist' } },
+      { text: 'Equipment inspected, in date, and appropriate for the task' },
+      { text: 'Exclusion zone set up at ground level below the work area' },
+      { text: 'Rescue plan agreed in case someone becomes suspended or unable to get down unaided' },
+    ]
+  },
+  electrical: {
+    label: "Electrical work (isolation, wiring, panel access)",
+    prereqs: [
+      { text: 'Safe isolation procedure to be followed: isolate, lock-off/tag, prove dead before touching conductors', link: { href: 'electrical-safety-check.html', text: 'Open Safe Isolation Record' } },
+      { text: 'Circuit diagrams/schematics available and checked against what will actually be isolated' },
+      { text: 'Isolation confirmed and communicated with site contact before work begins' },
+      { text: 'Contractor has provided evidence of relevant electrical competency (e.g. NICEIC, JIB card)' },
+    ]
+  },
+  confined: {
+    label: "Confined space entry",
+    prereqs: [
+      { text: 'Confined Space Entry Check completed in full before anyone enters', link: { href: 'confined-space-check.html', text: 'Open Confined Space Entry Check' } },
+      { text: 'Atmosphere testing equipment available and checked before entry' },
+      { text: 'Trained standby person present at the entry point for the full duration' },
+      { text: 'Rescue arrangements in place and briefed before anyone enters' },
+      { text: 'Asbestos and/or legionella checks relevant to this space completed', link: { href: 'asbestos-permit-check.html', text: 'Run Asbestos Permit Check' } },
+    ]
+  },
+  general: {
+    label: "General / low-risk site work",
+    prereqs: [
+      { text: 'Site induction completed with the contractor or team carrying out the work' },
+      { text: 'RAMS (risk assessment / method statement) provided and reviewed' },
+      { text: 'Emergency procedures and fire evacuation arrangements briefed' },
+    ]
+  },
+};
+
+let selectedType = null;
+let checks = {};
+
+function renderProgress(step){
+  progressEl.innerHTML = '';
+  for(let i=0;i<TOTAL_STEPS;i++){
+    const seg = document.createElement('div');
+    seg.className = 'seg' + (i < step ? ' done' : '');
+    progressEl.appendChild(seg);
+  }
+}
+
+function renderStep1(){
+  renderProgress(1);
+  let html = `<div class="card">
+    <div class="qnum">Step 1</div>
+    <div class="qtext">What type of job is this?</div>
+    <div class="qhelp">Choose the closest match — this decides which pre-checks apply.</div>
+    <div class="options">`;
+  Object.entries(jobTypes).forEach(([key, jt]) => {
+    html += `<button class="opt" data-key="${key}">${jt.label}</button>`;
+  });
+  html += `</div></div>`;
+  stageEl.innerHTML = html;
+  stageEl.querySelectorAll('.opt').forEach(btn => {
+    btn.addEventListener('click', () => {
+      selectedType = btn.getAttribute('data-key');
+      checks = {};
+      jobTypes[selectedType].prereqs.forEach((_, i) => checks[i] = false);
+      renderStep2();
+      window.scrollTo({top:0, behavior:'smooth'});
+    });
+  });
+}
+
+function renderStep2(){
+  renderProgress(2);
+  const jt = jobTypes[selectedType];
+  let html = `<div class="card">
+    <div class="qnum">Step 2 · ${jt.label}</div>
+    <div class="qtext">Confirm each pre-check before issuing the permit</div>
+    <div class="qhelp">Tick only what's actually been done — this becomes part of the permit record.</div>`;
+  jt.prereqs.forEach((p, i) => {
+    html += `<div class="prereq-item" id="prereq-${i}">
+      <input type="checkbox" id="chk-${i}" data-idx="${i}">
+      <div class="prereq-text">
+        <label for="chk-${i}">${p.text}</label>
+        ${p.link ? `<div class="prereq-link-row"><a href="${p.link.href}" target="_blank">${p.link.text} &rarr;</a></div>` : ''}
+      </div>
+    </div>`;
+  });
+  html += `</div>
+    <div class="backrow"><button class="backbtn" id="backBtn1">&larr; back</button></div>
+    <div class="actions">
+      <button class="btn-primary" id="toStep3Btn" disabled>Continue to permit details</button>
+    </div>`;
+  stageEl.innerHTML = html;
+
+  stageEl.querySelectorAll('input[type=checkbox]').forEach(cb => {
+    cb.addEventListener('change', () => {
+      const idx = cb.getAttribute('data-idx');
+      checks[idx] = cb.checked;
+      document.getElementById(`prereq-${idx}`).classList.toggle('checked', cb.checked);
+      const allChecked = Object.values(checks).every(v => v === true);
+      document.getElementById('toStep3Btn').disabled = !allChecked;
+    });
+  });
+  document.getElementById('backBtn1').addEventListener('click', () => { renderStep1(); window.scrollTo({top:0,behavior:'smooth'}); });
+  document.getElementById('toStep3Btn').addEventListener('click', () => { renderStep3(); window.scrollTo({top:0,behavior:'smooth'}); });
+}
+
+function renderStep3(){
+  renderProgress(3);
+  let html = `<div class="card">
+    <div class="qnum">Step 3</div>
+    <div class="qtext">Permit details</div>
+    <div class="qhelp">All pre-checks confirmed for: <b>${jobTypes[selectedType].label}</b></div>
+    <div class="meta-row">
+      <div class="meta-field"><label>Site</label><input type="text" id="siteField" placeholder="e.g. Avanti House Primary"></div>
+      <div class="meta-field"><label>Date</label><input type="date" id="dateField"></div>
+    </div>
+    <div class="meta-row">
+      <div class="meta-field"><label>Contractor / team</label><input type="text" id="contractorField" placeholder="Company or in-house team"></div>
+      <div class="meta-field"><label>Site contact</label><input type="text" id="contactField" placeholder="Who's authorising this"></div>
+    </div>
+    <div class="meta-row">
+      <div class="meta-field"><label>Start time</label><input type="time" id="startField"></div>
+      <div class="meta-field"><label>Expected end time</label><input type="time" id="endField"></div>
+    </div>
+    <div class="meta-row">
+      <div class="meta-field full"><label>Job description</label><textarea id="jobField" placeholder="Brief description of the work"></textarea></div>
+    </div>
+  </div>
+  <div class="backrow"><button class="backbtn" id="backBtn2">&larr; back</button></div>
+  <div class="actions">
+    <button class="btn-primary" id="issueBtn">Issue permit</button>
+  </div>`;
+  stageEl.innerHTML = html;
+  document.getElementById('backBtn2').addEventListener('click', () => { renderStep2(); window.scrollTo({top:0,behavior:'smooth'}); });
+  document.getElementById('issueBtn').addEventListener('click', issuePermit);
+}
+
+function refNumber(){
+  const d = new Date();
+  return `PTW-${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}-${String(d.getHours()).padStart(2,'0')}${String(d.getMinutes()).padStart(2,'0')}`;
+}
+
+function issuePermit(){
+  const jt = jobTypes[selectedType];
+  const site = document.getElementById('siteField').value || '—';
+  const date = document.getElementById('dateField').value || '—';
+  const contractor = document.getElementById('contractorField').value || '—';
+  const contact = document.getElementById('contactField').value || '—';
+  const start = document.getElementById('startField').value || '—';
+  const end = document.getElementById('endField').value || '—';
+  const job = document.getElementById('jobField').value || '—';
+  const ref = refNumber();
+
+  renderProgress(TOTAL_STEPS);
+  let checksHtml = jt.prereqs.map(p => `<li>✓ ${p.text}</li>`).join('');
+
+  stageEl.innerHTML = `
+    <div class="permit">
+      <div class="permit-ref">Permit reference: ${ref}</div>
+      <div class="permit-head">Permit to Work issued</div>
+      <dl class="permit-grid">
+        <div><dt>Site</dt><dd>${site}</dd></div>
+        <div><dt>Date</dt><dd>${date}</dd></div>
+        <div><dt>Contractor / team</dt><dd>${contractor}</dd></div>
+        <div><dt>Authorised by</dt><dd>${contact}</dd></div>
+        <div><dt>Start time</dt><dd>${start}</dd></div>
+        <div><dt>Expected end</dt><dd>${end}</dd></div>
+        <div class="full"><dt>Job type</dt><dd>${jt.label}</dd></div>
+        <div class="full"><dt>Job description</dt><dd>${job}</dd></div>
+      </dl>
+      <div class="permit-checks">
+        <div style="font-family:var(--mono);font-size:10.5px;text-transform:uppercase;color:#5b6e5f;margin-bottom:6px;">Pre-checks confirmed</div>
+        <ul>${checksHtml}</ul>
+      </div>
+    </div>
+    <div class="who-note">Print or save this record for the site file. This permit confirms pre-checks were completed — it doesn't remove the need to supervise the work itself or stop it if conditions change.</div>
+    <div class="actions">
+      <button class="btn-secondary" id="printBtn">Print / save as PDF</button>
+      <button class="btn-secondary" id="newPermitBtn">Start another permit</button>
+    </div>
+  `;
+  document.getElementById('printBtn').addEventListener('click', () => window.print());
+  document.getElementById('newPermitBtn').addEventListener('click', () => {
+    selectedType = null; checks = {};
+    renderStep1();
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+}
+
+renderStep1();
+</script>
+</body>
+</html>

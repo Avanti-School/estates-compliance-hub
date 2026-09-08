@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Confined Space Entry Check — Avanti Estates</title>
+<style>
+  :root{
+    --ink:#1b2420; --paper:#f7f5ef; --card:#ffffff; --line:#d8d3c4;
+    --amber:#b5651d; --amber-dark:#8a4a15; --red:#a3312a; --red-bg:#fbeceb;
+    --green:#3c6e47; --green-bg:#eaf3ec; --grey-bg:#eeece4;
+    --mono: 'JetBrains Mono', 'SF Mono', ui-monospace, monospace;
+    --serif: 'Iowan Old Style', 'Georgia', serif;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:640px;margin:0 auto;padding:20px 18px 60px;}
+  a.backlink{font-family:var(--mono);font-size:11.5px;color:#8a8570;text-decoration:none;display:inline-block;margin-bottom:14px;}
+  a.backlink:hover{text-decoration:underline;}
+  header{padding:22px 0 18px;border-bottom:2px solid var(--ink);margin-bottom:18px;}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--red);margin-bottom:6px;}
+  h1{font-family:var(--serif);font-size:27px;font-weight:600;margin:0 0 6px;letter-spacing:-0.01em;}
+  .sub{font-size:14px;color:#5b5648;max-width:54ch;}
+
+  .avoid-banner{
+    background:#fdf3e6; border:1.5px solid #e6c896; border-radius:10px; padding:16px 16px;
+    margin-bottom:20px; font-size:14px;
+  }
+  .avoid-banner b{display:block;font-family:var(--serif);font-size:16px;margin-bottom:6px;}
+
+  .meta-row{display:flex;gap:10px;margin:16px 0 4px;flex-wrap:wrap;}
+  .meta-field{flex:1;min-width:140px;}
+  .meta-field.full{flex:1 1 100%;}
+  .meta-field label{display:block;font-family:var(--mono);font-size:10.5px;text-transform:uppercase;letter-spacing:0.06em;color:#8a8570;margin-bottom:4px;}
+  .meta-field input, .meta-field textarea{width:100%;padding:9px 10px;border:1.5px solid var(--line);border-radius:7px;font-size:14px;font-family:inherit;background:var(--card);color:var(--ink);}
+  .meta-field textarea{min-height:56px;resize:vertical;}
+
+  .section{margin-bottom:20px;}
+  .section-title{font-family:var(--serif);font-size:18px;font-weight:600;margin:0 0 4px;display:flex;align-items:baseline;gap:8px;}
+  .section-title .num{font-family:var(--mono);font-size:12px;color:#8a8570;}
+  .section-note{font-size:12.5px;color:#7a7562;margin-bottom:10px;}
+
+  .item{background:var(--card);border:1.5px solid var(--line);border-radius:9px;padding:13px 14px;margin-bottom:8px;display:flex;gap:12px;align-items:flex-start;}
+  .item.checked{border-color:#bcd9c3;background:var(--green-bg);}
+  .item input[type=checkbox]{margin-top:3px;width:18px;height:18px;flex-shrink:0;cursor:pointer;}
+  .item-text{font-size:14.5px;line-height:1.4;}
+  .item-text .desc{display:block;font-size:12.5px;color:#7a7562;margin-top:3px;}
+
+  .progress-strip{
+    font-family:var(--mono); font-size:12px; color:#7a7562; margin:6px 0 18px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .progress-track{flex:1;height:6px;background:var(--grey-bg);border-radius:4px;overflow:hidden;}
+  .progress-fill{height:100%;background:var(--green);border-radius:4px;transition:width .2s;}
+
+  .actions{margin-top:20px;display:flex;gap:10px;flex-wrap:wrap;}
+  .btn-primary, .btn-secondary{font-family:var(--mono);font-size:12.5px;font-weight:600;padding:11px 18px;border-radius:7px;cursor:pointer;}
+  .btn-primary{background:var(--ink);color:var(--paper);border:1.5px solid var(--ink);}
+  .btn-primary:disabled{opacity:0.4;cursor:not-allowed;}
+  .btn-secondary{background:var(--card);color:var(--ink);border:1.5px solid var(--line);}
+
+  .report{border-radius:10px;padding:24px 20px 22px;border:1.5px solid var(--green);background:var(--green-bg);}
+  .report-ref{font-family:var(--mono);font-size:12px;color:var(--green);letter-spacing:0.08em;margin-bottom:6px;}
+  .report-head{font-family:var(--serif);font-size:22px;font-weight:600;margin-bottom:14px;color:var(--ink);}
+  .report-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 16px;margin-bottom:16px;font-size:13.5px;}
+  .report-grid .full{grid-column:1 / -1;}
+  .report-grid dt{font-family:var(--mono);font-size:10.5px;text-transform:uppercase;color:#5b6e5f;margin-bottom:2px;}
+  .report-grid dd{margin:0;font-weight:500;}
+  .report-checks{font-size:13.5px;margin-bottom:16px;}
+  .report-checks li{margin-bottom:4px;}
+  .who-note{font-size:12.5px;color:#7a7562;background:var(--grey-bg);border-radius:7px;padding:10px 13px;margin-top:16px;}
+
+  footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);font-size:11.5px;color:#8a8570;font-family:var(--mono);line-height:1.6;}
+  footer a{color:#6b6656;}
+
+  @media print{
+    a.backlink, .no-print { display:none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="backlink no-print" href="index.html">&larr; Estates Compliance Hub</a>
+  <header>
+    <div class="eyebrow">Avanti Schools Trust — Estates</div>
+    <h1>Confined Space Entry Check</h1>
+    <div class="sub">Run this before anyone enters a tank, duct, plant room void, or any space with limited entry/exit and a risk of dangerous atmosphere or engulfment.</div>
+  </header>
+
+  <div class="avoid-banner">
+    <b>Can this be done without entry?</b>
+    The first and best control is avoiding entry altogether — e.g. using remote tools, cameras, or extended equipment. Only proceed with the checks below if entry genuinely can't be avoided.
+  </div>
+
+  <div id="stage"></div>
+
+  <footer class="no-print">
+    Based on the Confined Spaces Regulations 1997 and HSE guidance (INDG258).<br>
+    If there's any doubt about atmosphere, access, or rescue arrangements — stop. Entry without a robust rescue plan is one of the leading causes of confined space fatalities, often among people trying to rescue a colleague.
+  </footer>
+</div>
+
+<script>
+const sections = [
+  {
+    title: "Planning & assessment",
+    items: [
+      { text: "Confirmed entry can't be avoided by doing the task from outside the space" },
+      { text: "A specific risk assessment has been carried out for this space and this task" },
+      { text: "The space's history/contents are known (e.g. previous contents, potential for residual gas, engulfment risk from stored material)" },
+    ]
+  },
+  {
+    title: "Atmosphere & ventilation",
+    items: [
+      { text: "Atmosphere testing equipment is available, in date, and calibrated" },
+      { text: "Atmosphere tested and confirmed safe before entry (oxygen level, no toxic/flammable gas)" },
+      { text: "Forced ventilation is in place if the assessment identifies it's needed, and running before entry" },
+      { text: "Continuous atmosphere monitoring is in place during entry, if the assessment requires it" },
+    ]
+  },
+  {
+    title: "People & communication",
+    items: [
+      { text: "Everyone entering is trained and competent for confined space work" },
+      { text: "A trained standby person is present at the entry point for the entire duration — never left unattended" },
+      { text: "A reliable communication method between entrant(s) and standby person is agreed and tested" },
+    ]
+  },
+  {
+    title: "Rescue arrangements",
+    items: [
+      { text: "A rescue plan is agreed and briefed before anyone enters — not improvised if something goes wrong" },
+      { text: "Rescue equipment (harness, tripod/winch, breathing apparatus if needed) is in place and checked" },
+      { text: "The rescue plan does not rely on someone entering the space to help without the same training, atmosphere testing, and equipment as the original entrant" },
+      { text: "Emergency services have been made aware of site access details if the risk assessment identifies a need for external rescue support" },
+    ]
+  },
+  {
+    title: "Related pre-checks",
+    items: [
+      { text: "Asbestos register checked if the space could contain ACMs (pipe lagging, insulation)" },
+      { text: "Legionella/water hygiene risk considered if the space holds or has held water (e.g. tanks, sumps)" },
+    ]
+  },
+];
+
+let checks = {};
+let totalSteps = 0;
+sections.forEach(s => totalSteps += s.items.length);
+
+function keyFor(si, ii){ return `s${si}-i${ii}`; }
+
+function render(){
+  const stage = document.getElementById('stage');
+  let html = `<div class="meta-row no-print">
+    <div class="meta-field"><label>Site</label><input type="text" id="siteField" placeholder="e.g. Avanti House Primary"></div>
+    <div class="meta-field"><label>Date</label><input type="date" id="dateField"></div>
+    <div class="meta-field"><label>Standby person</label><input type="text" id="standbyField" placeholder="Name"></div>
+  </div>
+  <div class="meta-row no-print">
+    <div class="meta-field full"><label>Space / location</label><input type="text" id="spaceField" placeholder="e.g. Plant room water tank, boiler house duct"></div>
+  </div>
+  <div class="progress-strip no-print">
+    <span id="progressText">0/${totalSteps} confirmed</span>
+    <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+  </div>`;
+
+  sections.forEach((section, si) => {
+    html += `<div class="section no-print">
+      <div class="section-title"><span class="num">${String(si+1).padStart(2,'0')}</span>${section.title}</div>`;
+    section.items.forEach((it, ii) => {
+      const k = keyFor(si, ii);
+      checks[k] = false;
+      html += `<div class="item" id="item-${k}">
+        <input type="checkbox" id="chk-${k}" data-key="${k}">
+        <div class="item-text"><label for="chk-${k}">${it.text}</label></div>
+      </div>`;
+    });
+    html += `</div>`;
+  });
+
+  html += `<div class="actions no-print">
+    <button class="btn-primary" id="genBtn" disabled>Generate entry record</button>
+    <button class="btn-secondary" id="resetBtn">Reset</button>
+  </div>`;
+
+  stage.innerHTML = html;
+
+  stage.querySelectorAll('input[type=checkbox]').forEach(cb => {
+    cb.addEventListener('change', () => {
+      const k = cb.getAttribute('data-key');
+      checks[k] = cb.checked;
+      document.getElementById(`item-${k}`).classList.toggle('checked', cb.checked);
+      updateProgress();
+    });
+  });
+  document.getElementById('genBtn').addEventListener('click', generateRecord);
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    if(confirm('Reset all answers?')){ render(); }
+  });
+}
+
+function updateProgress(){
+  const done = Object.values(checks).filter(v => v).length;
+  document.getElementById('progressText').textContent = `${done}/${totalSteps} confirmed`;
+  document.getElementById('progressFill').style.width = `${(done/totalSteps)*100}%`;
+  document.getElementById('genBtn').disabled = done !== totalSteps;
+}
+
+function refNumber(){
+  const d = new Date();
+  return `CS-${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}-${String(d.getHours()).padStart(2,'0')}${String(d.getMinutes()).padStart(2,'0')}`;
+}
+
+function generateRecord(){
+  const site = document.getElementById('siteField').value || '—';
+  const date = document.getElementById('dateField').value || '—';
+  const standby = document.getElementById('standbyField').value || '—';
+  const space = document.getElementById('spaceField').value || '—';
+  const ref = refNumber();
+
+  let checksHtml = '';
+  sections.forEach(section => {
+    section.items.forEach(it => { checksHtml += `<li>✓ ${it.text}</li>`; });
+  });
+
+  document.getElementById('stage').innerHTML = `
+    <div class="report">
+      <div class="report-ref">Entry record reference: ${ref}</div>
+      <div class="report-head">Confined space entry authorised</div>
+      <dl class="report-grid">
+        <div><dt>Site</dt><dd>${site}</dd></div>
+        <div><dt>Date</dt><dd>${date}</dd></div>
+        <div><dt>Standby person</dt><dd>${standby}</dd></div>
+        <div class="full"><dt>Space / location</dt><dd>${space}</dd></div>
+      </dl>
+      <div class="report-checks">
+        <div style="font-family:var(--mono);font-size:10.5px;text-transform:uppercase;color:#5b6e5f;margin-bottom:6px;">Pre-entry checks confirmed</div>
+        <ul>${checksHtml}</ul>
+      </div>
+    </div>
+    <div class="who-note">This record confirms pre-entry checks were completed — the standby person must remain in place for the full duration, and the rescue plan stays live until everyone is out.</div>
+    <div class="actions no-print">
+      <button class="btn-secondary" id="printBtn">Print / Save as PDF</button>
+      <button class="btn-secondary" id="newBtn">Start another entry check</button>
+    </div>
+  `;
+  document.getElementById('printBtn').addEventListener('click', () => window.print());
+  document.getElementById('newBtn').addEventListener('click', render);
+}
+
+render();
+</script>
+</body>
+</html>
